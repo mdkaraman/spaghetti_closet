@@ -105,23 +105,12 @@ input[type="password"]:focus {
 
 @media (max-width: 600px) {
   h1 {
-    font-size: 3rem;
-    margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   input[type="text"],
   input[type="password"] {
     width: 150px;
-  }
-
-  .form-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  label {
-    min-width: auto;
   }
 }
