@@ -1,22 +1,22 @@
 ---
-name: commit
-description: Run specs before each commit and create commits in this repo. Use when the user wants to commit, push, or asks how to commit; or when preparing to commit changes.
+name: commit-and-push
+description: Run specs before each commit, then commit and push. Use when the user wants to commit, push, or asks how to commit; or when preparing to commit changes.
 ---
 
-# Commit (with specs)
+# Commit and push (with specs)
 
 ## Workflow
-
-Before every commit:
 
 1. **Run specs:** `npm run test:run`
 2. If any test fails, fix the code or tests. Do not commit failing tests.
 3. Stage and commit with a short, simple message (e.g. "spaghetti closet login page", "mobile tweaks: inline form on iphone").
+4. **Push:** `git push` (once specs pass and commit is done).
 
 ## Commands
 
 - Run tests once (required before commit): `npm run test:run`
 - Watch mode (optional, while developing): `npm run test`
+- Push after commit: `git push`
 
 ## Convention
 

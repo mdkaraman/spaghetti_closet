@@ -28,4 +28,4 @@
 
 - Git repo and GitHub push were done manually (permission issues in automated setup).
 - README has Eminem-style description; deployment steps are in README.
-- **Vercel:** `vercel.json` sets `buildCommand` to `npm run test:run && next build`. Tests run on every deploy; a failing test blocks the deploy. Local convention: run specs before each commit (see `.cursor/skills/commit`).
+- **Vercel:** `vercel.json` sets `buildCommand` to `npm run test:run && next build`. Tests run on every deploy; a failing test blocks the deploy. Local convention: run specs before each commit (see `.cursor/skills/commit-and-push`).
