@@ -55,6 +55,7 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"] {
   border: 1px solid black;
   padding: 0.5rem;
@@ -65,6 +66,7 @@ input[type="password"] {
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
 input[type="password"]:focus {
   outline: none;
   border: 2px solid black;
@@ -103,6 +105,156 @@ input[type="password"]:focus {
   text-decoration: underline;
 }
 
+/* wtf-is-this page */
+.wtf-page {
+  padding: 3rem 2rem;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.wtf-italic {
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.wtf-plain {
+  margin-bottom: 1.5rem;
+}
+
+.wtf-link-wrap {
+  margin-top: 2rem;
+}
+
+.wtf-link {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+/* signup page */
+.signup-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-end;
+}
+
+.signup-form .form-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.signup-form .form-row label {
+  min-width: 5.5rem;
+  text-align: right;
+}
+
+.signup-submit {
+  margin-top: 0.25rem;
+}
+
+.signup-submit button {
+  background: none;
+  border: none;
+  color: #0000EE;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+}
+
+/* jont page */
+.jont-nav {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.jont-nav .jont-link {
+  color: black;
+  text-decoration: underline;
+}
+
+.jont-link {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+.jont-page {
+  padding: 4rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.jont-image-wrap {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.jont-price-star {
+  position: absolute;
+  left: -1.75rem;
+  bottom: -0.5rem;
+  width: 4rem;
+  height: 4rem;
+  background: #00d4ff;
+  color: black;
+  font-weight: bold;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 8-point star: 16 vertices (outer + inner alternating) */
+  clip-path: polygon(
+    50% 0%,
+    58% 32%,
+    85% 15%,
+    68% 42%,
+    100% 50%,
+    68% 58%,
+    85% 85%,
+    58% 68%,
+    50% 100%,
+    42% 68%,
+    15% 85%,
+    32% 58%,
+    0% 50%,
+    32% 42%,
+    15% 15%,
+    42% 32%
+  );
+  z-index: 1;
+  line-height: 1;
+}
+
+.jont-hoodie {
+  width: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.jont-description {
+  margin-bottom: 1.5rem;
+  white-space: pre-line;
+}
+
+.jont-cta {
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 600px) {
   h1 {
     margin-top: 1.5rem;
@@ -110,6 +262,7 @@ input[type="password"]:focus {
   }
 
   input[type="text"],
+  input[type="email"],
   input[type="password"] {
     width: 150px;
   }

@@ -31,6 +31,12 @@ test('login page has wtf is this link', () => {
 test('form has correct action and method', () => {
   render(<Home />)
   const form = screen.getByRole('button', { name: /enter/i }).closest('form')
-  expect(form).toHaveAttribute('action', '/')
+  expect(form).toHaveAttribute('action', '/jont')
   expect(form).toHaveAttribute('method', 'get')
+})
+
+test('wtf is this link goes to wtf-is-this page', () => {
+  render(<Home />)
+  const link = screen.getByRole('link', { name: /wtf is this\?\?/i })
+  expect(link).toHaveAttribute('href', '/wtf-is-this')
 })

@@ -6,7 +6,7 @@ export default function Home() {
       </h1>
 
       <div className="login-container">
-        <form className="login-form" action="/" method="get">
+        <form className="login-form" action="/jont" method="get">
           <div className="form-row">
             <label htmlFor="userid">user id:</label>
             <input type="text" id="userid" name="userid" />
@@ -22,7 +22,7 @@ export default function Home() {
       </div>
 
       <div className="footer-link">
-        <a href="#">wtf is this??</a>
+        <a href="/wtf-is-this">wtf is this??</a>
       </div>
     </>
   )
