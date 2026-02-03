@@ -21,4 +21,4 @@ description: Run full build (tests + type check) before each commit, then commit
 ## Convention
 
 - Keep commit messages concise. No marketing-style or vibe-tagline copy in messages.
-- Vercel runs the same build command (`npm run test:run && next build`). Running `npm run build` locally before commit catches failing tests and type errors so the main branch stays green.
+- Vercel runs `npm run build` (from package.json), which runs tests then Next.js build. Running the same command locally before commit catches failing tests and type errors so the main branch stays green.
