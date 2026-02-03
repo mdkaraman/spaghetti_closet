@@ -67,7 +67,7 @@ export async function login(_prev: unknown, formData: FormData) {
   const passcode = formData.get('passcode') as string
 
   if (!userid || !passcode) {
-    redirect('/?error=' + encodeURIComponent('User id and passcode required.'))
+    redirect('/wtf-is-this')
   }
 
   const supabase = await createClient()
@@ -79,7 +79,7 @@ export async function login(_prev: unknown, formData: FormData) {
     .maybeSingle()
 
   if (profileError || !profile) {
-    redirect('/?error=' + encodeURIComponent('Invalid user id or passcode.'))
+    redirect('/wtf-is-this')
   }
 
   const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -88,7 +88,7 @@ export async function login(_prev: unknown, formData: FormData) {
   })
 
   if (signInError) {
-    redirect('/?error=' + encodeURIComponent('Invalid user id or passcode.'))
+    redirect('/wtf-is-this')
   }
 
   redirect('/jont')

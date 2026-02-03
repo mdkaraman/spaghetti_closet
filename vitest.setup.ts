@@ -5,4 +5,7 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => ({
     get: (key: string) => null,
   }),
+  redirect: (url: string) => {
+    throw new Error(`NEXT_REDIRECT:${url}`)
+  },
 }))
