@@ -11,12 +11,12 @@ Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s bu
   - [x] has brief description of the site and a link to the login page (intro text + "click here to blow" → signup)
 - [x] user sign up page
   - [x] has field for email address, user id, passcode, and confirm passcode; submit button ("send it")
-- [ ] user info page
+- [x] user info page
 - [x] "jont of the day" page w/ link to buy
-- [ ] dummy payments page
-- [ ] leave email address page
-  - [ ] italic text: "I never meant to hurt you I never meant to make you cry But tonight I'm cleanin' out my closet (Ha)"
-  - [ ] "lmk when we back up" with a field to leave email address
+- [x] dummy payments page
+- [x] leave email address page
+  - [x] italic text: "I never meant to hurt you I never meant to make you cry But tonight I'm cleanin' out my closet (Ha)"
+  - [x] "lmk when we back up" with a field to leave email address
 - [ ] high level
   - [ ] user can login, see "jont of the day", buy it, see user info page
   - [ ] 1 jont per day (day = US East Coast time)
@@ -28,34 +28,30 @@ Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s bu
 
 **Supabase (DB + Auth in one place)**
 
-- [ ] Create Supabase project at supabase.com; get project URL and anon key. Add to `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Add same vars to Vercel project Environment Variables.
-- [ ] Install `@supabase/supabase-js` and (for Server Components / Server Actions) `@supabase/ssr`; create Supabase client helpers for browser and server (see Supabase Next.js docs).
-- [ ] Schema in Supabase (SQL editor or migrations):
-  - **Auth:** Supabase Auth handles `auth.users` (email + password). Email is required for sign up, password recovery, and communication.
-  - **profiles:** id (uuid/pk, same as `auth.users.id`), user_id (unique, text) — the **handle** (“user id”) for chat and profile; email (text, for display); created_at. Create one profile row per user on signup (in app after signUp, or DB trigger).
-  - **jonts:** id (uuid/pk), date (date, unique per day), title, description, image_url, price_cents, created_at. Load a week ahead.
-  - Optional: **waitlist_emails** (id, email, created_at) for “lmk when we back up”.
-- [ ] Seed or manual inserts for test jonts (e.g. one row per day for the current week).
+- [x] Create Supabase project at supabase.com; get project URL and anon key. Add to `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Add same vars to Vercel project Environment Variables.
+- [x] Install `@supabase/supabase-js` and `@supabase/ssr`; create Supabase client helpers in `lib/supabase/client.ts` and `lib/supabase/server.ts`.
+- [x] Schema in Supabase: run `supabase/migrations/00001_phase1_schema.sql` in SQL Editor (or `supabase db push`). Tables: **profiles**, **jonts**, **waitlist_emails**, **purchases** (see `docs/SCHEMA_PHASE1.md`).
+- [x] Seed: jonts and waitlist_emails tables populated (e.g. from `supabase/seed/*.csv` in Table Editor).
 - [ ] Phase 2 chat can use **Supabase Realtime** (same project, no extra provider).
 
 **Auth flow (same UI as now; Supabase under the hood)**
 
-- [ ] **Sign up (current form: user id, email, passcode, confirm):** Server Action (or API route) that (1) checks handle (`user_id`) and email are unique in `profiles` / auth, (2) `supabase.auth.signUp({ email, password })`, (3) insert into `profiles` (auth_user_id from signUp response, user_id = handle, email). Same form fields; user still submits “user id” + email + passcode. Redirect to `/jont` (or sign in and redirect).
-- [ ] **Login (current form: user id + passcode):** Server Action that (1) lookup `profiles` by `user_id` (handle) → get email, (2) `supabase.auth.signInWithPassword({ email, password })`. User still types handle and passcode; app resolves handle → email and calls Supabase. Redirect to `/jont` on success.
-- [ ] **Session:** Use Supabase `getUser()` / `getSession()` in Server Components or middleware to protect routes; redirect to `/` if not logged in on `/jont` and `/user`.
-- [ ] **Password recovery:** Supabase built-in (e.g. “forgot password” link that calls `supabase.auth.resetPasswordForEmail(email)`); user id (handle) can be shown after they enter email, or they enter email only for recovery.
+- [x] **Wire signup page to create user in DB:** Signup form submits to a Server Action that (1) validates passcode vs confirm match, (2) checks handle (`user_id`) and email are not already taken (query `profiles` or auth), (3) `supabase.auth.signUp({ email, password })`, (4) insert into `profiles` (id = auth user id from signUp response, user_id = handle, email). Then sign in and redirect to `/jont`. Keep current form fields (user id, email, passcode, confirm); no UI change.
+- [x] **Wire login (home page) to Supabase:** Server Action that (1) lookup `profiles` by `user_id` (handle) → get email, (2) `supabase.auth.signInWithPassword({ email, password })`. User still types handle and passcode; app resolves handle → email. Redirect to `/jont` on success.
+- [x] **Session:** Use Supabase `getUser()` / `getSession()` in Server Components or middleware to protect routes; redirect to `/` if not logged in on `/jont` and `/user`.
+- [x] **Password recovery:** Supabase built-in (e.g. “forgot password” link that calls `supabase.auth.resetPasswordForEmail(email)`); user id (handle) can be shown after they enter email, or they enter email only for recovery.
 
 **Dummy payments page**
 
-- [ ] Add page at `/pay`: simple “pay now” button (no Stripe). On submit, e.g. show “thanks” or redirect to `/user`. No real charge; just completes the “buy” flow for Phase 1.
+- [x] Add page at `/pay`: simple “pay now” button (no Stripe). On submit, e.g. show “thanks” or redirect to `/user`. No real charge; just completes the “buy” flow for Phase 1.
 
 **User info page**
 
-- [ ] Add page at `/user`: show logged-in user’s info (user id, email). Require session; redirect to `/` if not logged in. Link back to jont (e.g. “back to the jont” or “my ish” already links here from jont page).
+- [x] Add page at `/user`: show logged-in user’s info (user id, email). Require session; redirect to `/` if not logged in. Link back to jont (e.g. “back to the jont” or “my ish” already links here from jont page).
 
 **Leave email address page**
 
-- [ ] Add page (e.g. `/waitlist` or show when site is “dark”): italic text “I never meant to hurt you I never meant to make you cry But tonight I'm cleanin' out my closet (Ha)”, then “lmk when we back up” and a form (email field + submit). On submit, insert email into `waitlist_emails` (or similar table); show confirmation.
+- [x] Add page (e.g. `/waitlist` or show when site is “dark”): italic text “I never meant to hurt you I never meant to make you cry But tonight I'm cleanin' out my closet (Ha)”, then “lmk when we back up” and a form (email field + submit). On submit, insert email into `waitlist_emails` (or similar table); show confirmation.
 
 **Flow and backend logic**
 

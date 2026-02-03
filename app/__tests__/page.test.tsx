@@ -28,11 +28,17 @@ test('login page has wtf is this link', () => {
   expect(link).toBeInTheDocument()
 })
 
-test('form has correct action and method', () => {
+test('login form has submit button', () => {
   render(<Home />)
   const form = screen.getByRole('button', { name: /enter/i }).closest('form')
-  expect(form).toHaveAttribute('action', '/jont')
-  expect(form).toHaveAttribute('method', 'get')
+  expect(form).toBeInTheDocument()
+})
+
+test('forgot passcode link is present', () => {
+  render(<Home />)
+  const link = screen.getByRole('link', { name: /forgot passcode\?/i })
+  expect(link).toBeInTheDocument()
+  expect(link).toHaveAttribute('href', '/forgot-password')
 })
 
 test('wtf is this link goes to wtf-is-this page', () => {

@@ -43,6 +43,12 @@ h1 {
   transform: translateX(-30px);
 }
 
+.form-error {
+  color: #c00;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 .form-row {
   display: flex;
   align-items: center;
@@ -103,6 +109,36 @@ input[type="password"]:focus {
 .footer-link a {
   color: black;
   text-decoration: underline;
+}
+
+.footer-sep {
+  margin: 0 0.25rem;
+}
+
+.forgot-password-page {
+  padding: 2rem;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.forgot-password-page h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.forgot-back {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.forgot-back a {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+.form-success {
+  color: #333;
 }
 
 /* wtf-is-this page */
@@ -205,14 +241,14 @@ input[type="password"]:focus {
 
 .jont-price-star {
   position: absolute;
-  left: -1.75rem;
-  bottom: -0.5rem;
+  left: -1.25rem;
+  bottom: -0.25rem;
   width: 4rem;
   height: 4rem;
   background: #00d4ff;
   color: black;
   font-weight: bold;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,6 +289,78 @@ input[type="password"]:focus {
 
 .jont-cta {
   margin-top: 0.5rem;
+}
+
+.user-page {
+  padding: 2rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.user-heading {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.user-info {
+  margin-bottom: 1.5rem;
+}
+
+.user-info dt {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.user-info dd {
+  margin-left: 0;
+}
+
+.user-back {
+  margin-top: 1rem;
+}
+
+.pay-page {
+  padding: 2rem;
+  text-align: center;
+}
+
+.pay-button {
+  background: none;
+  border: none;
+  color: #0000EE;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.waitlist-page {
+  padding: 2rem;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.waitlist-lyrics {
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.waitlist-heading {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.waitlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.waitlist-confirm {
+  color: #333;
 }
 
 @media (max-width: 600px) {
