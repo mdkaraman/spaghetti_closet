@@ -1,0 +1,2 @@
+id,user_id,email,created_at
+REPLACE_WITH_REAL_AUTH_USER_UUID,testuser,testuser@example.com,2025-01-27T12:00:00Z

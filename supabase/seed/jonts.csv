@@ -1,0 +1,6 @@
+id,date,title,description,image_url,price_cents,created_at
+a1b2c3d4-e5f6-4789-a012-345678901234,2025-01-27,this that hoodie tho,"that size L jaunt",/hoodie.png,2000,2025-01-27T12:00:00Z
+b2c3d4e5-f6a7-4890-b123-456789012345,2025-01-28,vintage tee,size M crew neck,/tee.png,1500,2025-01-28T12:00:00Z
+c3d4e5f6-a7b8-4901-c234-567890123456,2025-01-29,denim jacket,size L light wash,/jacket.png,4500,2025-01-29T12:00:00Z
+d4e5f6a7-b8c9-4012-d345-678901234567,2025-01-30,corduroy pants,size 32 brown,/pants.png,3500,2025-01-30T12:00:00Z
+e5f6a7b8-c9d0-4123-e456-789012345678,2025-01-31,canvas sneakers,size 10 white,/shoes.png,5500,2025-01-31T12:00:00Z
