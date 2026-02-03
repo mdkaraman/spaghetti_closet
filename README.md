@@ -48,11 +48,11 @@ Follow the prompts. For the first deployment, it will ask you to link the projec
 4. Import your GitHub repository
 5. Vercel will auto-detect Next.js and deploy automatically
 
-That's it! Your site will be live at a URL like `your-project-name.vercel.app`
+That's it! Your site will be live at a URL like `your-project-name.vercel.app` (this project: spaghetticloset.com).
 
 ## Tech Stack
 
-- Next.js 14
-- React 18
-- TypeScript
-- Basic HTML/CSS (no fancy frameworks!)
+- Next.js 14, React 18, TypeScript
+- Plain HTML/CSS (no Tailwind)
+- Vitest + React Testing Library for tests
+- Phase 1: Supabase (DB + Auth) to be added; see **PROJECT_SUMMARY.md** and **PHASES_OUTLINE.md** for current state and next steps.
