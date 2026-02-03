@@ -55,4 +55,4 @@ That's it! Your site will be live at a URL like `your-project-name.vercel.app` (
 - Next.js 14, React 18, TypeScript
 - Plain HTML/CSS (no Tailwind)
 - Vitest + React Testing Library for tests
-- Phase 1: Supabase (DB + Auth) to be added; see **PROJECT_SUMMARY.md** and **PHASES_OUTLINE.md** for current state and next steps.
+- Supabase (DB + Auth). See **docs/SUPABASE_AND_VERCEL_SETUP.md** for what to configure in Supabase and Vercel and why.
