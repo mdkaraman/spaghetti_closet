@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 export async function signup(formData: FormData) {
@@ -49,14 +49,63 @@ export async function signup(formData: FormData) {
     redirect('/signup?error=' + encodeURIComponent('Sign up failed.'))
   }
 
-  const { error: profileError } = await supabase.from('profiles').insert({
-    id: authData.user.id,
-    user_id: userid,
-    email,
-  })
+  // Prefer trigger-based profile creation (no privileged key). If a secret/service key
+  // is set, we can insert here in the same request; otherwise redirect to complete
+  // so the profile is updated with the chosen handle in a request that has the session.
+  try {
+    const service = createServiceRoleClient()
+    const { error: profileError } = await service.from('profiles').insert({
+      id: authData.user.id,
+      user_id: userid,
+      email,
+    })
+    if (!profileError) {
+      redirect('/jont')
+      return
+    }
+  } catch {
+    // No SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SECRET_KEY — use trigger + complete flow
+  }
 
-  if (profileError) {
-    redirect('/signup?error=' + encodeURIComponent('Could not create profile. Try again.'))
+  redirect('/signup/complete?userid=' + encodeURIComponent(userid))
+}
+
+/** Called after signUp when session is available; sets profile.user_id (handle). */
+export async function completeSignup(userid: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    redirect('/signup?error=' + encodeURIComponent('Session expired. Please sign in.'))
+  }
+
+  const trimmed = (userid ?? '').trim()
+  if (!trimmed) {
+    redirect('/signup')
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (profile) {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ user_id: trimmed })
+      .eq('id', user.id)
+    if (error) {
+      redirect('/signup?error=' + encodeURIComponent(error.message))
+    }
+  } else {
+    const { error } = await supabase.from('profiles').insert({
+      id: user.id,
+      user_id: trimmed,
+      email: user.email ?? '',
+    })
+    if (error) {
+      redirect('/signup?error=' + encodeURIComponent(error.message))
+    }
   }
 
   redirect('/jont')

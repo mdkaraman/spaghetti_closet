@@ -6,43 +6,60 @@ This doc explains **what** to configure in Supabase and Vercel, **where** to do 
 
 ## Supabase
 
-Supabase is your database and auth provider. The app talks to it using a **project URL** and an **anon key**. Some features (like password reset) also depend on **redirect URLs** and **site URL** so Supabase knows where to send users.
+Supabase is your database and auth provider. The app talks to it using a **project URL** and a **publishable/anon key**. Some features (like password reset) also depend on **redirect URLs** and **site URL** so Supabase knows where to send users.
 
-### 1. Create a project and get URL + anon key
+### 1. Create a project and get URL + API keys
 
 **Where:** [supabase.com/dashboard](https://supabase.com/dashboard) → New project → pick org, name, password, region.
 
 **What:** After the project is created, go to **Project Settings** (gear) → **API**. You’ll see:
 
 - **Project URL** (e.g. `https://xxxxx.supabase.co`)
-- **Project API keys** → **anon** / **public** key (long string; safe to use in the browser)
+- **API keys** — Supabase is rolling out [new key types](https://github.com/orgs/supabase/discussions/29260):
+  - **Publishable key** (`sb_publishable_...`) or legacy **anon** key — safe to use in the browser; use for `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+  - **Secret key** (`sb_secret_...`) or legacy **service_role** key — backend only, bypasses RLS; use for server-only operations if you need them (see below).
 
-**Why:** The app needs these to call Supabase from the client and from Next.js (server/middleware). Without them, `createClient()` in `lib/supabase/client.ts` and `server.ts` would throw and nothing would load.
+**Why:** The app needs the URL and a publishable/anon key to call Supabase from the client and from Next.js. Without them, `createClient()` would throw and nothing would load.
 
 **Local:** Put them in `.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-publishable-or-anon-key
 ```
 
-Use the same values in Vercel (see below) so production uses the same project.
+**Signup and the Secret key:** Signup works **without** a Secret/service_role key. The app uses a database trigger (migration `00002_profile_on_auth_signup.sql`) that creates a profile row when a user signs up; the app then sets the chosen handle on the next request. If you do have a **Secret key** (or legacy service_role key), you can set it so the profile is created in the same request (optional):
+
+```env
+SUPABASE_SERVICE_ROLE_KEY=your-secret-or-service-role-key
+```
+
+or the new env name:
+
+```env
+SUPABASE_SECRET_KEY=your-secret-key
+```
+
+**Never** expose the Secret/service_role key to the client or commit it. Use the same values in Vercel (see below) so production uses the same project.
 
 ---
 
-### 2. Apply the schema (tables + RLS)
+### 2. Apply the schema (tables + RLS + trigger)
 
 **Where:** Dashboard → **SQL Editor**, or CLI: `supabase link` then `supabase db push`.
 
-**What:** Run the SQL in `supabase/migrations/00001_phase1_schema.sql`. That creates:
+**What:** Run the migrations in order:
 
-- `profiles` (user id handle, email; one row per auth user)
-- `jonts` (one row per calendar day; “jont of the day”)
-- `waitlist_emails` (emails from the waitlist page)
-- `purchases` (who bought which jont)
-- RLS policies so users only see their own data where required.
+1. **`supabase/migrations/00001_phase1_schema.sql`** — creates:
+   - `profiles` (user id handle, email; one row per auth user)
+   - `jonts` (one row per calendar day; “jont of the day”)
+   - `waitlist_emails` (emails from the waitlist page)
+   - `purchases` (who bought which jont)
+   - RLS policies so users only see their own data where required.
 
-**Why:** The app assumes these tables and policies exist. If they don’t, signup (insert into `profiles`), login (read from `profiles`), jont of the day (read from `jonts`), pay (insert into `purchases`), and waitlist (insert into `waitlist_emails`) will fail or return nothing.
+2. **`supabase/migrations/00002_profile_on_auth_signup.sql`** — creates a trigger so that when a new user is created in Auth, a row is automatically inserted into `profiles`. The app then sets the chosen handle on the next request (no Secret key required for signup).
+
+**Why:** The app assumes these tables, policies, and trigger exist. If they don’t, signup, login, jont of the day, pay, and waitlist will fail or return nothing.
 
 ---
 
@@ -99,14 +116,16 @@ Vercel runs your Next.js app in production. It needs the **same** Supabase URL a
 | Name                         | Value                    | Environments   |
 |-----------------------------|--------------------------|----------------|
 | `NEXT_PUBLIC_SUPABASE_URL`  | Your Supabase project URL | Production, Preview (optional) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key   | Production, Preview (optional) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publishable or anon key   | Production, Preview (optional) |
+| `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_SECRET_KEY` | Secret key (optional; signup works without it via trigger) | Production (optional) |
 | `NEXT_PUBLIC_SITE_URL`      | `https://your-app.vercel.app` or your custom domain | Production (optional) |
 
-Use the **exact same** URL and anon key as in `.env.local` so production and local use the same database and auth.
+Use the **exact same** URL and publishable/anon key as in `.env.local` so production and local use the same database and auth.
 
 **Why:**
 
-- **URL + anon key:** The server and client code both read these (via `process.env`). If they’re missing or wrong in Vercel, every Supabase call in production fails (login, signup, jont of the day, pay, waitlist).
+- **URL + anon/publishable key:** The server and client code both read these (via `process.env`). If they’re missing or wrong in Vercel, every Supabase call in production fails (login, signup, jont of the day, pay, waitlist).
+- **Secret key:** Optional. Signup works without it (trigger creates the profile; app sets the handle on `/signup/complete`). Set it only if you want profile creation in the same request or for other server-only operations.
 - **NEXT_PUBLIC_SITE_URL:** The “forgot passcode” flow calls `resetPasswordForEmail(email, { redirectTo: `${base}/auth/callback?next=/` })`. If `NEXT_PUBLIC_SITE_URL` is set in Vercel, `base` is your real production URL so the link in the email sends users to your live app. If you don’t set it, the code falls back to `http://localhost:3000`, so the reset link would point at localhost and break for production users.
 
 ---
@@ -123,7 +142,7 @@ Use the **exact same** URL and anon key as in `.env.local` so production and loc
 
 ## Quick checklist
 
-- **Supabase:** Project created → URL + anon key in `.env.local` (and Vercel). Schema migration run. `jonts` seeded with at least one row for “today” (US East). Redirect URLs include `https://your-domain/auth/callback` (and localhost for local testing). Optionally adjust email confirmation.
-- **Vercel:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` set; optionally `NEXT_PUBLIC_SITE_URL` for password reset. Redeploy after changing env vars.
+- **Supabase:** Project created → URL + publishable/anon key in `.env.local` (and Vercel). **Both** migrations run (schema + profile-on-signup trigger). `jonts` seeded with at least one row for “today” (US East). Redirect URLs include `https://your-domain/auth/callback` (and localhost for local testing). Optionally adjust email confirmation.
+- **Vercel:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` set; optionally `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_SECRET_KEY` and `NEXT_PUBLIC_SITE_URL`. Redeploy after changing env vars.
 
 Once this is done, the app can sign up, log in, show the jont of the day, record a dummy pay, show the user page, collect waitlist emails, and do password reset in production.

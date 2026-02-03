@@ -21,7 +21,7 @@
 | email      | text      | NOT NULL    | Duplicated from auth for display; must match auth.users. |
 | created_at | timestamptz | DEFAULT now() | |
 
-- One profile per auth user. Create row in app right after `auth.signUp()`, or via DB trigger on `auth.users` insert.
+- One profile per auth user. **Migration `00002_profile_on_auth_signup.sql`** adds a trigger on `auth.users` so a profile row is created automatically on signup (with a placeholder `user_id`); the app then sets the chosen handle on `/signup/complete`. Optionally, the app can create the profile in the same request using a Secret/service_role key.
 - RLS: users can read/update their own row (by `auth.uid() = id`).
 
 ### 2. `jonts`
@@ -73,6 +73,6 @@
 **Option B – Supabase CLI**  
 1. Install CLI: `npm i -g supabase` (or see [Supabase CLI](https://supabase.com/docs/guides/cli)).  
 2. From project root: `supabase login`, then `supabase link --project-ref <project-id>` (project ID = from dashboard URL).  
-3. Apply: `supabase db push`. This applies all files in `supabase/migrations/`.
+3. Apply: `supabase db push`. This applies all files in `supabase/migrations/` (including `00001_phase1_schema.sql` and `00002_profile_on_auth_signup.sql`).
 
 After applying, seed jonts via Dashboard → Table Editor → `jonts` → Insert row (or run a seed SQL). Use **date** = today in US East Coast for “jont of the day”.
