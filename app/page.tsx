@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 import LoginForm from './LoginForm'
 
 export default function Home() {
@@ -9,7 +10,9 @@ export default function Home() {
       </h1>
 
       <div className="login-container">
-        <LoginForm />
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
       </div>
 
       <div className="footer-link">

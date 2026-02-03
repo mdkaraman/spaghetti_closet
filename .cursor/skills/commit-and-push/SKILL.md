@@ -1,24 +1,24 @@
 ---
 name: commit-and-push
-description: Run specs before each commit, then commit and push. Use when the user wants to commit, push, or asks how to commit; or when preparing to commit changes.
+description: Run full build (tests + type check) before each commit, then commit and push. Use when the user wants to commit, push, or asks how to commit; or when preparing to commit changes.
 ---
 
-# Commit and push (with specs)
+# Commit and push (with build)
 
 ## Workflow
 
-1. **Run specs:** `npm run test:run`
-2. If any test fails, fix the code or tests. Do not commit failing tests.
+1. **Run build:** `npm run build` (runs tests then Next.js build with type checking).
+2. If the build fails (failing tests or type errors), fix the code or tests. Do not commit until the build passes.
 3. Stage and commit with a short, simple message (e.g. "spaghetti closet login page", "mobile tweaks: inline form on iphone").
-4. **Push:** `git push` (once specs pass and commit is done).
+4. **Push:** `git push` (once build passes and commit is done).
 
 ## Commands
 
-- Run tests once (required before commit): `npm run test:run`
-- Watch mode (optional, while developing): `npm run test`
+- Full build before commit (required): `npm run build`
+- Watch mode for tests only (optional, while developing): `npm run test`
 - Push after commit: `git push`
 
 ## Convention
 
 - Keep commit messages concise. No marketing-style or vibe-tagline copy in messages.
-- Vercel build runs `npm run test:run && next build`; a failing test blocks deploy. Running specs locally before commit keeps the main branch green.
+- Vercel runs the same build command (`npm run test:run && next build`). Running `npm run build` locally before commit catches failing tests and type errors so the main branch stays green.

@@ -16,17 +16,17 @@ function formData(overrides: { userid?: string; passcode?: string } = {}) {
 
 test('login with missing user id redirects to wtf-is-this', async () => {
   const fd = formData({ passcode: 'secret123' })
-  await expect(login(undefined, fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
 })
 
 test('login with missing passcode redirects to wtf-is-this', async () => {
   const fd = formData({ userid: 'myhandle' })
-  await expect(login(undefined, fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
 })
 
 test('login with empty user id and passcode redirects to wtf-is-this', async () => {
   const fd = formData({ userid: '', passcode: '' })
-  await expect(login(undefined, fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
 })
 
 test('login when profile not found redirects to wtf-is-this', async () => {
@@ -41,7 +41,7 @@ test('login when profile not found redirects to wtf-is-this', async () => {
     auth: {},
   } as any)
   const fd = formData({ userid: 'nobody', passcode: 'secret123' })
-  await expect(login(undefined, fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
 })
 
 test('login when signInWithPassword fails redirects to wtf-is-this', async () => {
@@ -60,5 +60,5 @@ test('login when signInWithPassword fails redirects to wtf-is-this', async () =>
     },
   } as any)
   const fd = formData({ userid: 'myhandle', passcode: 'wrongpass' })
-  await expect(login(undefined, fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
 })

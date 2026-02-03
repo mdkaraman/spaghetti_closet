@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
-export async function signup(_prev: unknown, formData: FormData) {
+export async function signup(formData: FormData) {
   const userid = (formData.get('userid') as string)?.trim()
   const email = (formData.get('email') as string)?.trim()
   const passcode = formData.get('passcode') as string
@@ -62,7 +62,7 @@ export async function signup(_prev: unknown, formData: FormData) {
   redirect('/jont')
 }
 
-export async function login(_prev: unknown, formData: FormData) {
+export async function login(formData: FormData) {
   const userid = (formData.get('userid') as string)?.trim()
   const passcode = formData.get('passcode') as string
 
