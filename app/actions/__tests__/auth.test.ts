@@ -29,22 +29,22 @@ function signupFormData(overrides: {
   return fd
 }
 
-test('login with missing user id redirects to wtf-is-this', async () => {
+test('login with missing user id redirects to home with error', async () => {
   const fd = formData({ passcode: 'secret123' })
-  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow(/NEXT_REDIRECT:\/\?error=.*nah/)
 })
 
-test('login with missing passcode redirects to wtf-is-this', async () => {
+test('login with missing passcode redirects to home with error', async () => {
   const fd = formData({ userid: 'myhandle' })
-  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow(/NEXT_REDIRECT:\/\?error=.*nah/)
 })
 
-test('login with empty user id and passcode redirects to wtf-is-this', async () => {
+test('login with empty user id and passcode redirects to home with error', async () => {
   const fd = formData({ userid: '', passcode: '' })
-  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow(/NEXT_REDIRECT:\/\?error=.*nah/)
 })
 
-test('login when profile not found redirects to wtf-is-this', async () => {
+test('login when profile not found redirects to home with error', async () => {
   vi.mocked(createClient).mockResolvedValue({
     from: () => ({
       select: () => ({
@@ -56,10 +56,10 @@ test('login when profile not found redirects to wtf-is-this', async () => {
     auth: {},
   } as any)
   const fd = formData({ userid: 'nobody', passcode: 'secret123' })
-  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow(/NEXT_REDIRECT:\/\?error=.*nah/)
 })
 
-test('login when signInWithPassword fails redirects to wtf-is-this', async () => {
+test('login when signInWithPassword fails redirects to home with error', async () => {
   vi.mocked(createClient).mockResolvedValue({
     from: () => ({
       select: () => ({
@@ -75,7 +75,7 @@ test('login when signInWithPassword fails redirects to wtf-is-this', async () =>
     },
   } as any)
   const fd = formData({ userid: 'myhandle', passcode: 'wrongpass' })
-  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/wtf-is-this')
+  await expect(login(fd)).rejects.toThrow(/NEXT_REDIRECT:\/\?error=.*nah/)
 })
 
 // --- signup validation ---

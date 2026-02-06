@@ -116,7 +116,7 @@ export async function login(formData: FormData) {
   const passcode = formData.get('passcode') as string
 
   if (!userid || !passcode) {
-    redirect('/wtf-is-this')
+    redirect('/?error=' + encodeURIComponent('nah who dis???'))
   }
 
   const supabase = await createClient()
@@ -128,7 +128,7 @@ export async function login(formData: FormData) {
     .maybeSingle()
 
   if (profileError || !profile) {
-    redirect('/wtf-is-this')
+    redirect('/?error=' + encodeURIComponent('nah who dis???'))
   }
 
   const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -137,7 +137,7 @@ export async function login(formData: FormData) {
   })
 
   if (signInError) {
-    redirect('/wtf-is-this')
+    redirect('/?error=' + encodeURIComponent('nah who dis???'))
   }
 
   redirect('/jont')

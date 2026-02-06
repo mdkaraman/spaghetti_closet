@@ -49,6 +49,11 @@ h1 {
   margin: 0;
 }
 
+.login-form .form-error {
+  width: calc(80px + 1rem + 200px);
+  text-align: center;
+}
+
 .form-row {
   display: flex;
   align-items: center;
