@@ -10,15 +10,15 @@ export async function signup(formData: FormData) {
   const confirm = formData.get('confirm') as string
 
   if (!userid || !email || !passcode || !confirm) {
-    redirect('/signup?error=' + encodeURIComponent('All fields required.'))
+    redirect('/signup?error=' + encodeURIComponent('bruh it\'s all required'))
   }
 
   if (passcode !== confirm) {
-    redirect('/signup?error=' + encodeURIComponent('Passcode and confirm do not match.'))
+    redirect('/signup?error=' + encodeURIComponent('passcode and confirm no matchy!!!'))
   }
 
   if (passcode.length < 6) {
-    redirect('/signup?error=' + encodeURIComponent('Passcode must be at least 6 characters.'))
+    redirect('/signup?error=' + encodeURIComponent('passcode must be a very average 6 characters or longer'))
   }
 
   const supabase = await createClient()
@@ -30,7 +30,7 @@ export async function signup(formData: FormData) {
     .maybeSingle()
 
   if (existing) {
-    redirect('/signup?error=' + encodeURIComponent('That user id is already taken.'))
+    redirect('/signup?error=' + encodeURIComponent('just be yourself!!! that user id is already taken playa'))
   }
 
   const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -40,13 +40,13 @@ export async function signup(formData: FormData) {
 
   if (signUpError) {
     if (signUpError.message.includes('already registered') || signUpError.message.includes('already exists')) {
-      redirect('/signup?error=' + encodeURIComponent('That email is already registered.'))
+      redirect('/signup?error=' + encodeURIComponent('oh laawwd that email is already registered'))
     }
     redirect('/signup?error=' + encodeURIComponent(signUpError.message))
   }
 
   if (!authData.user) {
-    redirect('/signup?error=' + encodeURIComponent('Sign up failed.'))
+    redirect('/signup?error=' + encodeURIComponent('sign up failed ::cue papa roach::'))
   }
 
   // Prefer trigger-based profile creation (no privileged key). If a secret/service key
@@ -75,7 +75,7 @@ export async function completeSignup(userid: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    redirect('/signup?error=' + encodeURIComponent('Session expired. Please sign in.'))
+    redirect('/signup?error=' + encodeURIComponent('you slept on it doggy. gotta sign in again'))
   }
 
   const trimmed = (userid ?? '').trim()

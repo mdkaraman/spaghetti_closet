@@ -17,8 +17,7 @@ export default function Home() {
 
       <div className="footer-link">
         <a href="/wtf-is-this">wtf is this??</a>
-        <span className="footer-sep"> · </span>
-        <a href="/forgot-password">forgot passcode?</a>
+        <a href="/forgot-password">smh i forgot</a>
       </div>
     </>
   )

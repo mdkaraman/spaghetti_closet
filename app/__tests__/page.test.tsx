@@ -36,7 +36,7 @@ test('login form has submit button', () => {
 
 test('forgot passcode link is present', () => {
   render(<Home />)
-  const link = screen.getByRole('link', { name: /forgot passcode\?/i })
+  const link = screen.getByRole('link', { name: /smh i forgot/i })
   expect(link).toBeInTheDocument()
   expect(link).toHaveAttribute('href', '/forgot-password')
 })

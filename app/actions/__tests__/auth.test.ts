@@ -92,7 +92,7 @@ test('signup when passcode and confirm do not match redirects with error', async
     passcode: 'secret12',
     confirm: 'other12',
   })
-  await expect(signup(fd)).rejects.toThrow(/NEXT_REDIRECT:\/signup\?error=.*Passcode/)
+  await expect(signup(fd)).rejects.toThrow(/NEXT_REDIRECT:\/signup\?error=.*matchy/)
 })
 
 test('signup when passcode too short redirects with error', async () => {
@@ -102,7 +102,7 @@ test('signup when passcode too short redirects with error', async () => {
     passcode: '12345',
     confirm: '12345',
   })
-  await expect(signup(fd)).rejects.toThrow(/NEXT_REDIRECT:\/signup\?error=.*Passcode/)
+  await expect(signup(fd)).rejects.toThrow(/NEXT_REDIRECT:\/signup\?error=.*6.*characters/)
 })
 
 test('signup when user id already taken redirects with error', async () => {
@@ -162,7 +162,7 @@ test('completeSignup when no session redirects to signup with error', async () =
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
     },
   } as any)
-  await expect(completeSignup('myhandle')).rejects.toThrow(/Session.*expired/)
+  await expect(completeSignup('myhandle')).rejects.toThrow(/slept.*sign.*again/)
 })
 
 test('completeSignup when empty userid redirects to signup', async () => {

@@ -100,10 +100,11 @@ input[type="password"]:focus {
 }
 
 .footer-link {
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
+  margin-top: auto;
+  padding: 1rem;
   font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .footer-link a {
@@ -111,30 +112,11 @@ input[type="password"]:focus {
   text-decoration: underline;
 }
 
-.footer-sep {
-  margin: 0 0.25rem;
-}
-
 .forgot-password-page {
   padding: 2rem;
   max-width: 400px;
   margin: 0 auto;
   text-align: center;
-}
-
-.forgot-password-page h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
-.forgot-back {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.forgot-back a {
-  color: #0000EE;
-  text-decoration: underline;
 }
 
 .form-success {
