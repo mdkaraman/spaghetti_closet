@@ -246,8 +246,8 @@ input[type="password"]:focus {
 
 .jont-price-star {
   position: absolute;
-  left: -1.25rem;
-  bottom: -0.25rem;
+  left: -1.75rem;
+  bottom: -0.6rem;
   width: 4rem;
   height: 4rem;
   background: #00d4ff;
