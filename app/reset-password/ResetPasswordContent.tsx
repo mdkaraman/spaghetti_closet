@@ -23,7 +23,7 @@ export default function ResetPasswordContent() {
         <input type="password" id="confirm" name="confirm" required minLength={6} />
       </div>
       <div className="signup-submit">
-        <button type="submit">reset password</button>
+        <button type="submit">resend it lol</button>
       </div>
     </form>
   )

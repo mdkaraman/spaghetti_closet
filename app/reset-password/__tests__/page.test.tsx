@@ -10,7 +10,7 @@ test('reset password page has passcode + confirm fields', () => {
 
 test('reset password page has reset submit button', () => {
   render(<ResetPassword />)
-  const btn = screen.getByRole('button', { name: /reset password/i })
+  const btn = screen.getByRole('button', { name: /resend it lol/i })
   expect(btn).toBeInTheDocument()
   expect(btn).toHaveAttribute('type', 'submit')
 })

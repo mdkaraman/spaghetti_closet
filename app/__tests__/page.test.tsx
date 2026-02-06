@@ -34,6 +34,12 @@ test('login form has submit button', () => {
   expect(form).toBeInTheDocument()
 })
 
+test('login form uses post method', () => {
+  render(<Home searchParams={{}} />)
+  const form = screen.getByRole('button', { name: /enter/i }).closest('form')
+  expect(form).toHaveAttribute('method', 'post')
+})
+
 test('forgot passcode link is present', () => {
   render(<Home searchParams={{}} />)
   const link = screen.getByRole('link', { name: /smh i forgot/i })

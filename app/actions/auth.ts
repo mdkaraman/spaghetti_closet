@@ -119,9 +119,10 @@ export async function login(formData: FormData) {
     redirect('/?error=' + encodeURIComponent('nah who dis???'))
   }
 
-  const supabase = await createClient()
-
-  const { data: profile, error: profileError } = await supabase
+  // Look up email by handle (user_id). Service/secret key bypasses RLS so only
+  // the server can do this — no email enumeration for anonymous callers.
+  const service = createServiceRoleClient()
+  const { data: profile, error: profileError } = await service
     .from('profiles')
     .select('email')
     .eq('user_id', userid)
@@ -131,6 +132,7 @@ export async function login(formData: FormData) {
     redirect('/?error=' + encodeURIComponent('nah who dis???'))
   }
 
+  const supabase = await createClient()
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email: profile.email,
     password: passcode,

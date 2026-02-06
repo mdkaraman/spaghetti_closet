@@ -45,7 +45,7 @@ test('login with empty user id and passcode redirects to home with error', async
 })
 
 test('login when profile not found redirects to home with error', async () => {
-  vi.mocked(createClient).mockResolvedValue({
+  vi.mocked(createServiceRoleClient).mockReturnValue({
     from: () => ({
       select: () => ({
         eq: () => ({
@@ -60,7 +60,7 @@ test('login when profile not found redirects to home with error', async () => {
 })
 
 test('login when signInWithPassword fails redirects to home with error', async () => {
-  vi.mocked(createClient).mockResolvedValue({
+  vi.mocked(createServiceRoleClient).mockReturnValue({
     from: () => ({
       select: () => ({
         eq: () => ({
@@ -69,6 +69,10 @@ test('login when signInWithPassword fails redirects to home with error', async (
         }),
       }),
     }),
+    auth: {},
+  } as any)
+  vi.mocked(createClient).mockResolvedValue({
+    from: () => ({}),
     auth: {
       signInWithPassword: () =>
         Promise.resolve({ data: { user: null, session: null }, error: { message: 'Invalid login' } }),
@@ -76,6 +80,32 @@ test('login when signInWithPassword fails redirects to home with error', async (
   } as any)
   const fd = formData({ userid: 'myhandle', passcode: 'wrongpass' })
   await expect(login(fd)).rejects.toThrow(/NEXT_REDIRECT:\/\?error=.*nah/)
+})
+
+test('login when profile and password valid redirects to jont', async () => {
+  vi.mocked(createServiceRoleClient).mockReturnValue({
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: () =>
+            Promise.resolve({ data: { email: 'user@example.com' }, error: null }),
+        }),
+      }),
+    }),
+    auth: {},
+  } as any)
+  vi.mocked(createClient).mockResolvedValue({
+    from: () => ({}),
+    auth: {
+      signInWithPassword: () =>
+        Promise.resolve({
+          data: { user: { id: 'u1', email: 'user@example.com' }, session: {} },
+          error: null,
+        }),
+    },
+  } as any)
+  const fd = formData({ userid: 'myhandle', passcode: 'secret123' })
+  await expect(login(fd)).rejects.toThrow('NEXT_REDIRECT:/jont')
 })
 
 // --- signup validation ---

@@ -8,7 +8,7 @@ export default function LoginForm() {
   const error = searchParams?.get('error') ?? null
 
   return (
-    <form className="login-form" action={login}>
+    <form className="login-form" action={login} method="post">
       {error && (
         <p className="form-error" role="alert">
           {error}
