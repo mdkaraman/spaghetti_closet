@@ -148,3 +148,33 @@ export async function signOut() {
   await supabase.auth.signOut()
   redirect('/')
 }
+
+export async function updatePassword(formData: FormData) {
+  const passcode = formData.get('passcode') as string
+  const confirm = formData.get('confirm') as string
+
+  if (!passcode || !confirm) {
+    redirect('/reset-password?error=' + encodeURIComponent('bruh it\'s all required'))
+  }
+
+  if (passcode !== confirm) {
+    redirect('/reset-password?error=' + encodeURIComponent('passcode and confirm no matchy!!!'))
+  }
+
+  if (passcode.length < 6) {
+    redirect('/reset-password?error=' + encodeURIComponent('passcode must be a very average 6 characters or longer'))
+  }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    redirect('/reset-password?error=' + encodeURIComponent('session expired — request a new reset link'))
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: passcode })
+  if (error) {
+    redirect('/reset-password?error=' + encodeURIComponent(error.message))
+  }
+
+  redirect('/jont')
+}

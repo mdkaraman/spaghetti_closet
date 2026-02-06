@@ -1,8 +1,17 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import LoginForm from './LoginForm'
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: {
+  searchParams: { error?: string }
+}) {
+  if (searchParams?.error === 'auth') {
+    redirect('/reset-password/expired')
+  }
+
   return (
     <>
       <h1>

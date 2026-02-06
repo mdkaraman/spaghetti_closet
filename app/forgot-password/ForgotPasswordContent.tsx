@@ -12,7 +12,7 @@ export default function ForgotPasswordContent() {
     <div className="forgot-password-page">
       {success ? (
         <p className="form-success" role="status">
-          Check your email for a link to reset your passcode.
+          peep your email
         </p>
       ) : (
         <form className="login-form" action={requestPasswordReset}>

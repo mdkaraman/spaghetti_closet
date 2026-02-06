@@ -126,7 +126,7 @@ Use the **exact same** URL and publishable/anon key as in `.env.local` so produc
 
 - **URL + anon/publishable key:** The server and client code both read these (via `process.env`). If they’re missing or wrong in Vercel, every Supabase call in production fails (login, signup, jont of the day, pay, waitlist).
 - **Secret key:** Optional. Signup works without it (trigger creates the profile; app sets the handle on `/signup/complete`). Set it only if you want profile creation in the same request or for other server-only operations.
-- **NEXT_PUBLIC_SITE_URL:** The “forgot passcode” flow calls `resetPasswordForEmail(email, { redirectTo: `${base}/auth/callback?next=/` })`. If `NEXT_PUBLIC_SITE_URL` is set in Vercel, `base` is your real production URL so the link in the email sends users to your live app. If you don’t set it, the code falls back to `http://localhost:3000`, so the reset link would point at localhost and break for production users.
+- **NEXT_PUBLIC_SITE_URL:** The “forgot passcode” flow calls `resetPasswordForEmail(email, { redirectTo: `${base}/auth/callback?next=/reset-password` })`. If `NEXT_PUBLIC_SITE_URL` is set in Vercel, `base` is your real production URL so the link in the email sends users to your live app. If you don’t set it, the code falls back to `http://localhost:3000`, so the reset link would point at localhost and break for production users.
 
 ---
 

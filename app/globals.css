@@ -128,6 +128,24 @@ input[type="password"]:focus {
   color: #333;
 }
 
+.reset-link-expired {
+  padding: 3rem 2rem;
+  max-width: 32rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reset-link-expired-message {
+  color: #c00;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.reset-link-expired a {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
 /* wtf-is-this page */
 .wtf-page {
   padding: 3rem 2rem;
