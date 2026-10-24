@@ -175,7 +175,10 @@ export async function updatePassword(formData: FormData) {
 
   const { error } = await supabase.auth.updateUser({ password: passcode })
   if (error) {
-    redirect('/reset-password?error=' + encodeURIComponent(error.message))
+    const message = /new password should be different from the old password/i.test(error.message)
+      ? 'you singin the same old song… switch it up fam!!'
+      : error.message
+    redirect('/reset-password?error=' + encodeURIComponent(message))
   }
 
   redirect('/jont')
