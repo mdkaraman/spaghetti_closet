@@ -29,12 +29,12 @@
 
 - **DB + Auth:** Supabase (Postgres + Auth; Realtime planned for Phase 2 chat). “User id” = handle (display name); auth is email + password; login form stays “user id” + passcode (app resolves handle → email). Setup: `docs/SUPABASE_AND_VERCEL_SETUP.md`.
 - **Payments:** Stripe later; Phase 1 = dummy pay page only (already writes `purchases`).
-- **Next steps:** Remaining Phase 1 high-level items and Phases 2–8 are in **PHASES_OUTLINE.md**. Note: some detailed Phase 1 checkboxes there (jont-of-the-day query, purchase insert) are already implemented in code even if still unchecked in that file.
+- **Next steps:** Remaining Phase 1 items are week-ahead jont loading, the week-on / site-goes-dark loop, and showing purchases on `/user`. Phases 2–8 are in **PHASES_OUTLINE.md**.
 
 ## Testing
 
 - **Framework:** Vitest + React Testing Library (`npm run test`, `npm run test:run`). Config: `vitest.config.ts`, `vitest.setup.ts` (jest-dom); paths via `vite-tsconfig-paths`.
-- **Coverage:** Home, wtf-is-this, signup (+ complete), jont, pay, waitlist, forgot/reset password (+ expired), and auth actions (`app/actions/__tests__/auth.test.ts`). Run `npm run test:run` before commit; see `.cursor/skills/write-specs` for how to add tests.
+- **Coverage:** Home, wtf-is-this, signup (+ complete), jont, pay, waitlist, forgot/reset password (+ expired), auth actions (`app/actions/__tests__/auth.test.ts`), and the forgot-password action. Run `npm run test:run` before commit; see `.cursor/skills/write-specs` for how to add tests.
 
 ## Repo / Deploy
 

@@ -18,11 +18,11 @@ Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s bu
   - [x] italic text: "I never meant to hurt you I never meant to make you cry But tonight I'm cleanin' out my closet (Ha)"
   - [x] "lmk when we back up" with a field to leave email address
 - [ ] high level
-  - [ ] user can login, see "jont of the day", buy it, see user info page
-  - [ ] 1 jont per day (day = US East Coast time)
+  - [x] user can login, see "jont of the day", buy it, see user info page
+  - [x] 1 jont per day (day = US East Coast time)
   - [ ] jonts for the week are loaded on the backend ahead of time (one week of jonts at a time)
   - [ ] trial this one week at a time; site goes live for a week then goes dark and has page to leave email to be notified when next week starts
-  - [ ] authentication and database storage for users and jonts
+  - [x] authentication and database storage for users and jonts
 
 ### Phase 1 – Next steps (detailed)
 
@@ -38,7 +38,7 @@ Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s bu
 
 - [x] **Wire signup page to create user in DB:** Signup form submits to a Server Action that (1) validates passcode vs confirm match, (2) checks handle (`user_id`) and email are not already taken (query `profiles` or auth), (3) `supabase.auth.signUp({ email, password })`, (4) insert into `profiles` (id = auth user id from signUp response, user_id = handle, email). Then sign in and redirect to `/jont`. Keep current form fields (user id, email, passcode, confirm); no UI change.
 - [x] **Wire login (home page) to Supabase:** Server Action that (1) lookup `profiles` by `user_id` (handle) → get email, (2) `supabase.auth.signInWithPassword({ email, password })`. User still types handle and passcode; app resolves handle → email. Redirect to `/jont` on success.
-- [x] **Session:** Use Supabase `getUser()` / `getSession()` in Server Components or middleware to protect routes; redirect to `/` if not logged in on `/jont` and `/user`.
+- [x] **Session:** Use Supabase `getUser()` / `getSession()` in Server Components or middleware to protect routes; redirect to `/` if not logged in on `/jont`, `/user`, and `/pay`.
 - [x] **Password recovery:** Supabase built-in (e.g. “forgot password” link that calls `supabase.auth.resetPasswordForEmail(email)`); user id (handle) can be shown after they enter email, or they enter email only for recovery.
 
 **Dummy payments page**
@@ -55,8 +55,8 @@ Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s bu
 
 **Flow and backend logic**
 
-- [ ] “Jont of the day”: API or Server Component that selects the jont where `date` = today (US East Coast). Use `Intl` or a small helper with `America/New_York` for “today”.
-- [ ] After “pay now” on dummy pay page: optionally record a “purchase” in DB (e.g. `purchases`: profile_id or auth user id, jont_id, created_at) so we can show “you copped it” on user info later; or skip until Phase 2 and just redirect.
+- [x] “Jont of the day”: API or Server Component that selects the jont where `date` = today (US East Coast). Use `Intl` or a small helper with `America/New_York` for “today”.
+- [x] After “pay now” on dummy pay page: record a “purchase” in DB (`purchases`: auth user id, jont_id, created_at). Showing that list on `/user` (“you copped it”) is still open.
 
 ## Phase 2: The Chat
 
