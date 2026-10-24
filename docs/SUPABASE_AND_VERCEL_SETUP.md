@@ -69,7 +69,7 @@ SUPABASE_SECRET_KEY=your-secret-key
 
 **What:** Add rows to `jonts` so there is at least one row whose **date** is “today” in **US East Coast** time. The app uses `America/New_York` for “today” (see `lib/date.ts`). Example: if today is 2025-02-03 in New York, you need a row with `date = 2025-02-03`. You can use `supabase/seed/jonts.csv` as a template; adjust the `date` column so one row matches today (or the day you’re testing).
 
-**Why:** The jont page calls `getJontOfTheDay()`, which does `SELECT ... WHERE date = todayEastCoast()`. If no row has that date, the page shows “No jont today.” Seeding a row for today (and maybe a few days around it) makes the “jont of the day” block show real content.
+**Why:** The jont page calls `getJontOfTheDay()`, which does `SELECT ... WHERE date = todayEastCoast()`. If no row has that date, the page shows “ain’t got naaaan for ya…. maybe later doe”. Seeding a row for today (and maybe a few days around it) makes the “jont of the day” block show real content.
 
 ---
 

@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest'
-import { login, signup, completeSignup } from '../auth'
+import { login, signup, completeSignup, updatePassword } from '../auth'
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
@@ -203,4 +203,46 @@ test('completeSignup when empty userid redirects to signup', async () => {
     },
   } as any)
   await expect(completeSignup('')).rejects.toThrow('NEXT_REDIRECT:/signup')
+})
+
+function resetForm(passcode: string, confirm: string) {
+  const fd = new FormData()
+  fd.set('passcode', passcode)
+  fd.set('confirm', confirm)
+  return fd
+}
+
+test('updatePassword when the new passcode matches the old one uses the same-song copy', async () => {
+  vi.mocked(createClient).mockResolvedValue({
+    auth: {
+      getUser: () =>
+        Promise.resolve({ data: { user: { id: 'u1' } }, error: null }),
+      updateUser: () =>
+        Promise.resolve({
+          data: { user: null },
+          error: { message: 'New password should be different from the old password.' },
+        }),
+    },
+  } as any)
+  await expect(updatePassword(resetForm('secret12', 'secret12'))).rejects.toThrow(
+    'NEXT_REDIRECT:/reset-password?error=' +
+      encodeURIComponent('you singin the same old song… switch it up fam!!')
+  )
+})
+
+test('updatePassword keeps other supabase errors', async () => {
+  vi.mocked(createClient).mockResolvedValue({
+    auth: {
+      getUser: () =>
+        Promise.resolve({ data: { user: { id: 'u1' } }, error: null }),
+      updateUser: () =>
+        Promise.resolve({
+          data: { user: null },
+          error: { message: 'Auth session missing!' },
+        }),
+    },
+  } as any)
+  await expect(updatePassword(resetForm('secret12', 'secret12'))).rejects.toThrow(
+    'NEXT_REDIRECT:/reset-password?error=' + encodeURIComponent('Auth session missing!')
+  )
 })

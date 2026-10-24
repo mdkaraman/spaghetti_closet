@@ -2,28 +2,42 @@
 
 ## What’s Built
 
-- **Stack:** Next.js 14, React 18, TypeScript. Deploy: Vercel (free tier). No DB or auth yet.
-- **Routes:** `/` (login), `/wtf-is-this` (intro → “click here to blow” → signup), `/signup` (user id, email, passcode, confirm → “send it” → `/jont`), `/jont` (jont of the day: hoodie image, $20, description, “i will have it!” → `/pay`, “my ish” → `/user`). `/user` shows the logged-in handle, email, and purchased jonts (“you copped it”).
-- **Styling:** Plain HTML + basic CSS, no Tailwind. Title = image `public/title.png`; hoodie = `public/hoodie.png`. Responsive; signup form right-aligned; jont page has 8-point price star.
+- **Stack:** Next.js 14, React 18, TypeScript. Deploy: Vercel. **DB + Auth:** Supabase (Postgres + Auth).
+- **Routes:**
+  - `/` — login (handle + passcode; app resolves handle → email)
+  - `/wtf-is-this` — intro → “click here to blow” → signup
+  - `/signup` — user id, email, passcode, confirm → “send it”
+  - `/signup/complete` — set handle after auth signup (profile trigger creates placeholder)
+  - `/jont` — jont of the day from DB (America/New_York); “i will have it!” → `/pay`, “my ish” → `/user`; empty state if no jont for today
+  - `/pay` — dummy “pay now” (no Stripe); records a `purchases` row then redirects to `/user`
+  - `/user` — logged-in profile (user id, email); session required
+  - `/waitlist` — dark-week email capture (“lmk when we back up”) → `waitlist_emails`
+  - `/forgot-password`, `/reset-password`, `/reset-password/expired` — password recovery
+  - `/auth/callback` — Supabase auth callback
+- **Middleware:** Protects `/jont`, `/user`, `/pay`; unauthenticated users redirect to `/`.
+- **Schema:** `profiles`, `jonts`, `waitlist_emails`, `purchases` (migrations in `supabase/migrations/`; outline in `docs/SCHEMA_PHASE1.md`). Seed CSVs in `supabase/seed/`.
+- **Styling:** Plain HTML + basic CSS, no Tailwind. Title = `public/title.png`; fallback hoodie = `public/hoodie.png`. Responsive; signup form right-aligned; jont page has 8-point price star.
 - **Vibe:** Simple, sparse, DIY. Commit messages concise (e.g. “spaghetti closet login page”).
 
 ## Product (from PHASES_OUTLINE.md)
 
 - **Core:** One vintage clothing item (“jont”) per day (US East Coast). User logs in, sees jont, buys or skips; after that day it’s gone. Week-on, then site goes dark with waitlist page.
-- **Later:** Bidding (Phase 3), chat (Phase 2), up/down vote comments, Spaghetti Bucks, blessing, preferences, users selling jonts.
+- **Phase 1 status:** Pages, Supabase auth, schema, jont-of-the-day lookup, dummy pay + purchase insert, and waitlist are in place. Still open at a product level: week-ahead jont loading, automatic week-on / site-goes-dark trial loop, and showing “you copped it” (or purchase history) on `/user`.
+- **Later:** Chat (Phase 2), bidding (Phase 3), up/down vote comments, Spaghetti Bucks, blessing, preferences, users selling jonts. Checklist: **PHASES_OUTLINE.md**.
 
-## Tech choices (for Phase 1+)
+## Tech choices
 
-- **DB + Auth:** Supabase (Postgres + Auth in one place; Realtime for Phase 2 chat). “User id” = handle (display name for chat/profile); auth is email + password; login form stays “user id” + passcode (app resolves handle → email).
-- **Payments:** Stripe later; Phase 1 = dummy pay page only.
-- **Next steps:** All Phase 1 tasks and detailed steps (Supabase setup, schema, auth flow, dummy pay, user info, waitlist, jont-of-the-day logic) are in **PHASES_OUTLINE.md** → “Phase 1 – Next steps (detailed)”. Use that as the checklist to complete Phase 1.
+- **DB + Auth:** Supabase (Postgres + Auth; Realtime planned for Phase 2 chat). “User id” = handle (display name); auth is email + password; login form stays “user id” + passcode (app resolves handle → email). Setup: `docs/SUPABASE_AND_VERCEL_SETUP.md`.
+- **Payments:** Stripe later; Phase 1 = dummy pay page only (already writes `purchases`).
+- **Next steps:** Remaining Phase 1 items are week-ahead jont loading, the week-on / site-goes-dark loop, and showing purchases on `/user`. Phases 2–8 are in **PHASES_OUTLINE.md**.
 
 ## Testing
 
 - **Framework:** Vitest + React Testing Library (`npm run test`, `npm run test:run`). Config: `vitest.config.ts`, `vitest.setup.ts` (jest-dom); paths via `vite-tsconfig-paths`.
-- **Coverage:** `app/__tests__/page.test.tsx` (home), `app/wtf-is-this/__tests__/page.test.tsx`, `app/signup/__tests__/page.test.tsx`, `app/jont/__tests__/page.test.tsx`. Run `npm run test:run` before commit; see `.cursor/skills/write-specs` for how to add tests.
+- **Coverage:** Home, wtf-is-this, signup (+ complete), jont, pay, waitlist, forgot/reset password (+ expired), auth actions (`app/actions/__tests__/auth.test.ts`), and the forgot-password action. Run `npm run test:run` before commit; see `.cursor/skills/write-specs` for how to add tests.
 
 ## Repo / Deploy
 
-- **Vercel:** `vercel.json` → `buildCommand`: `npm run test:run && next build`. Failing tests block deploy. Commit workflow: run specs, then commit and push (`.cursor/skills/commit-and-push`).
+- **Vercel:** `npm run build` runs `test:run` then `next build`. Failing tests block deploy. Commit workflow: run build, then commit and push (`.cursor/skills/commit-and-push`).
+- **Env:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (and optionally service-role / site URL) in `.env.local` and Vercel.
 - **Live:** spaghetticloset.com (per user).
