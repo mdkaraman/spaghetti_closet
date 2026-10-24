@@ -3,7 +3,7 @@
 ## What’s Built
 
 - **Stack:** Next.js 14, React 18, TypeScript. Deploy: Vercel (free tier). No DB or auth yet.
-- **Routes:** `/` (login), `/wtf-is-this` (intro → “click here to blow” → signup), `/signup` (user id, email, passcode, confirm → “send it” → `/jont`), `/jont` (jont of the day: hoodie image, $20, description, “i will have it!” → `/pay`, “my ish” → `/user`). `/pay` and `/user` are linked but not implemented.
+- **Routes:** `/` (login), `/wtf-is-this` (intro → “click here to blow” → signup), `/signup` (user id, email, passcode, confirm → “send it” → `/jont`), `/jont` (jont of the day: hoodie image, $20, description, “i will have it!” → `/pay`, “my ish” → `/user`). `/user` shows the logged-in handle, email, and purchased jonts (“you copped it”).
 - **Styling:** Plain HTML + basic CSS, no Tailwind. Title = image `public/title.png`; hoodie = `public/hoodie.png`. Responsive; signup form right-aligned; jont page has 8-point price star.
 - **Vibe:** Simple, sparse, DIY. Commit messages concise (e.g. “spaghetti closet login page”).
 

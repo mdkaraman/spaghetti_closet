@@ -321,6 +321,38 @@ input[type="password"]:focus {
   margin-left: 0;
 }
 
+.user-copped {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+
+.user-copped-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.user-copped-image {
+  width: 48px;
+  height: auto;
+  display: block;
+}
+
+.user-copped-title {
+  display: block;
+}
+
+.user-copped-meta {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.user-empty {
+  margin-bottom: 1.5rem;
+}
+
 .user-back {
   margin-top: 1rem;
 }
