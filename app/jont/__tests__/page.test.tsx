@@ -42,7 +42,7 @@ test('jont page has i will have it link to pay', () => {
 
 test('shows fallback when no jont', () => {
   render(<JontPageContent jont={null} />)
-  expect(screen.getByText(/no jont today/i)).toBeInTheDocument()
+  expect(screen.getByText(/ain’t got naaaan for ya…. maybe later doe/i)).toBeInTheDocument()
   const link = screen.getByRole('link', { name: /my ish/i })
   expect(link).toBeInTheDocument()
 })

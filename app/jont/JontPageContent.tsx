@@ -11,7 +11,7 @@ export default function JontPageContent({ jont }: Props) {
           <Link href="/user" className="jont-link">my ish</Link>
         </div>
         <div className="jont-page">
-          <p className="jont-description">No jont today. Check back tomorrow.</p>
+          <p className="jont-description">ain’t got naaaan for ya…. maybe later doe</p>
         </div>
       </>
     )
