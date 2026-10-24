@@ -56,7 +56,7 @@ Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s bu
 **Flow and backend logic**
 
 - [x] “Jont of the day”: API or Server Component that selects the jont where `date` = today (US East Coast). Use `Intl` or a small helper with `America/New_York` for “today”.
-- [x] After “pay now” on dummy pay page: record a “purchase” in DB (`purchases`: auth user id, jont_id, created_at). Showing that list on `/user` (“you copped it”) is still open.
+- [x] After “pay now” on dummy pay page: record a “purchase” in DB (`purchases`: auth user id, jont_id, created_at). `/user` shows that list (“you copped it”), newest first.
 
 ## Phase 2: The Chat
 
