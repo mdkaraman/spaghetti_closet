@@ -10,6 +10,25 @@ const { createClient } = await import('@/lib/supabase/server')
 
 const user = { id: 'user-1', email: 'auth@example.com' }
 
+function emptyQuery() {
+  const result = { data: [] as unknown[], error: null }
+  const query: any = new Proxy(function () {}, {
+    get(_target, prop) {
+      if (prop === 'then') {
+        return (
+          onFulfilled: (value: typeof result) => unknown,
+          onRejected?: (reason: unknown) => unknown
+        ) => Promise.resolve(result).then(onFulfilled, onRejected)
+      }
+      return query
+    },
+    apply() {
+      return query
+    },
+  })
+  return query
+}
+
 function mockSupabase({
   currentUser = user as { id: string; email?: string } | null,
   profile = { user_id: 'coolhandle', email: 'a@b.co' } as { user_id: string; email: string } | null,
@@ -36,7 +55,7 @@ function mockSupabase({
       if (table === 'purchases') {
         return { select: purchasesSelect }
       }
-      throw new Error(`unexpected table ${table}`)
+      return emptyQuery()
     },
   } as any)
 

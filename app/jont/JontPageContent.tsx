@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import type { JontRow } from '@/lib/jont'
+import JontCta from './JontCta'
 
-type Props = { jont: JontRow | null }
+type Props = { jont: JontRow | null; hasPurchase?: boolean }
 
-export default function JontPageContent({ jont }: Props) {
+export default function JontPageContent({ jont, hasPurchase = false }: Props) {
   if (!jont) {
     return (
       <>
@@ -45,7 +46,7 @@ export default function JontPageContent({ jont }: Props) {
           )}
         </p>
         <p className="jont-cta">
-          <Link href="/pay" className="jont-link">i will have it!</Link>
+          <JontCta jontId={jont.id} hasPurchase={hasPurchase} />
         </p>
       </div>
     </>
