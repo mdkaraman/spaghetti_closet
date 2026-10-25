@@ -336,8 +336,8 @@ Done when:
 
 ### H1 — Put a jont up for sale
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/h1-list-purchase-9f3e
 
 Needs: W0
 
@@ -347,10 +347,10 @@ Owns: `app/sell/page.tsx`, `app/user/SellSection.tsx`, `app/actions/list.ts`, te
 
 Done when:
 
-- [ ] A user can list a purchase they own, and cannot list someone else’s.
-- [ ] A purchase that already has a listing is not offered again.
-- [ ] `/user` links to `/sell`.
-- [ ] `npm run build` passes.
+- [x] A user can list a purchase they own, and cannot list someone else’s.
+- [x] A purchase that already has a listing is not offered again.
+- [x] `/user` links to `/sell`.
+- [x] `npm run build` passes.
 
 ### C2 — Bid-only jont page
 
