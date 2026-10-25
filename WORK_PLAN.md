@@ -187,8 +187,8 @@ W0
 
 ### W0 — Seams
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/w0-seams-5248
 
 Needs: nothing. One agent. Everyone else waits for this.
 
@@ -202,11 +202,11 @@ The jont page test still sees `i will have it!` → `/pay` with the default prop
 
 Done when:
 
-- [ ] `00003_parallel_seams.sql` matches the contract (tables, view, policies, purchase read, realtime, RPC stubs).
-- [ ] Jont page still links to `/pay` in buy mode, and the chat href is covered by a test.
-- [ ] User page still shows the handle, email, and copped list.
-- [ ] Dark allowlist is tested, and a live stub does not redirect.
-- [ ] `npm run build` passes.
+- [x] `00003_parallel_seams.sql` matches the contract (tables, view, policies, purchase read, realtime, RPC stubs).
+- [x] Jont page still links to `/pay` in buy mode, and the chat href is covered by a test.
+- [x] User page still shows the handle, email, and copped list.
+- [x] Dark allowlist is tested, and a live stub does not redirect.
+- [x] `npm run build` passes.
 
 ### A1 — Week window
 
@@ -227,8 +227,8 @@ Done when:
 
 ### A2 — Load one week
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/load-next-week-fe8b
 
 Needs: W0
 
@@ -238,9 +238,9 @@ Follow `supabase/seed/copy_hoodie_rest_of_year.sql`: America/New_York dates, cop
 
 Done when:
 
-- [ ] The SQL is safe to run twice (existing dates and an overlapping week row are skipped).
-- [ ] The README says how to run it and that it arms the gate.
-- [ ] `npm run build` passes.
+- [x] The SQL is safe to run twice (existing dates and an overlapping week row are skipped).
+- [x] The README says how to run it and that it arms the gate.
+- [x] `npm run build` passes.
 
 ### B1 — Chat
 

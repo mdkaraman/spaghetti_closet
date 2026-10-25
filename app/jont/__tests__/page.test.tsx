@@ -40,6 +40,13 @@ test('jont page has i will have it link to pay', () => {
   expect(link).toHaveAttribute('href', '/pay')
 })
 
+test('a purchase renders pull up to that jont chat', () => {
+  render(<JontPageContent jont={mockJont} hasPurchase />)
+  const link = screen.getByRole('link', { name: /pull up/i })
+  expect(link).toHaveAttribute('href', '/chat?jont=abc-123')
+  expect(screen.queryByRole('link', { name: /i will have it!/i })).not.toBeInTheDocument()
+})
+
 test('shows fallback when no jont', () => {
   render(<JontPageContent jont={null} />)
   expect(screen.getByText(/ain’t got naaaan for ya…. maybe later doe/i)).toBeInTheDocument()

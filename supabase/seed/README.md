@@ -13,3 +13,5 @@
 So: upload **jonts.csv** and **waitlist_emails.csv** to validate and build. Use the app (signup) to create profiles; use the app (dummy pay) or dashboard to create purchases.
 
 **Rest of the year:** `copy_hoodie_rest_of_year.sql` copies the hoodie jont (`/hoodie.png`, or the earliest title containing "hoodie") onto every day from today through December 31 in America/New_York. Paste it into the Supabase SQL Editor and run it. Dates that already have a jont are skipped.
+
+**One week:** `load_next_week.sql` copies that same hoodie jont onto the seven days from today through the exclusive end in America/New_York, and inserts one live `site_weeks` row for that span. Paste it into the Supabase SQL Editor and run it. A date that already has a jont is skipped, and so is the week row when one already overlaps the span. Running this file arms the dark gate: with a week row present, the site is dark outside that span.
