@@ -11,3 +11,5 @@
 - **purchases:** Add rows in Table Editor after you have at least one user and one jont: use the user's UUID from Auth and a jont `id` from the jonts table.
 
 So: upload **jonts.csv** and **waitlist_emails.csv** to validate and build. Use the app (signup) to create profiles; use the app (dummy pay) or dashboard to create purchases.
+
+**Rest of the year:** `copy_hoodie_rest_of_year.sql` copies the hoodie jont (`/hoodie.png`, or the earliest title containing "hoodie") onto every day from today through December 31 in America/New_York. Paste it into the Supabase SQL Editor and run it. Dates that already have a jont are skipped.
