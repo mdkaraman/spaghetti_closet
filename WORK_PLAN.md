@@ -210,8 +210,8 @@ Done when:
 
 ### A1 — Week window
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/a1-week-window-220c
 
 Needs: W0
 
@@ -221,9 +221,9 @@ Implement `siteStatus` and `getSiteWindow` per the contract. Query `site_weeks` 
 
 Done when:
 
-- [ ] No rows → live. Covering live row → live. Covering dark row → dark. Rows that miss today → dark. `ends_on` is exclusive.
-- [ ] Tests cover those four cases, including a seven-day span.
-- [ ] `npm run build` passes.
+- [x] No rows → live. Covering live row → live. Covering dark row → dark. Rows that miss today → dark. `ends_on` is exclusive.
+- [x] Tests cover those four cases, including a seven-day span.
+- [x] `npm run build` passes.
 
 ### A2 — Load one week
 
