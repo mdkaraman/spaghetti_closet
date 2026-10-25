@@ -319,8 +319,8 @@ Done when:
 
 ### G1 — Preference form
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/preference-form-605a
 
 Needs: W0
 
@@ -330,9 +330,9 @@ The section saves the logged-in user’s `size` and `jont_type` on `profiles`. O
 
 Done when:
 
-- [ ] Choosing a size and a type updates the caller’s profile.
-- [ ] Empty is a valid saved value.
-- [ ] `npm run build` passes.
+- [x] Choosing a size and a type updates the caller’s profile.
+- [x] Empty is a valid saved value.
+- [x] `npm run build` passes.
 
 ### H1 — Put a jont up for sale
 
