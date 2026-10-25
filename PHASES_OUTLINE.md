@@ -1,6 +1,6 @@
 # Phases Outline
 
-Use this file with **PROJECT_SUMMARY.md** to pick up work: summary = what’s built and tech choices; this file = Phase 1 checklist and detailed next steps (Supabase, auth, pages). Complete Phase 1 by working through the unchecked items and “Phase 1 – Next steps (detailed)” below.
+Use this file with **PROJECT_SUMMARY.md** and **WORK_PLAN.md**. The summary is what’s built and the tech choices. This file is the phase checklist. **WORK_PLAN.md** is the task split and the status board for the remaining work, including which tasks can run at the same time.
 
 ---
 

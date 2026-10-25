@@ -29,7 +29,7 @@
 
 - **DB + Auth:** Supabase (Postgres + Auth; Realtime planned for Phase 2 chat). “User id” = handle (display name); auth is email + password; login form stays “user id” + passcode (app resolves handle → email). Setup: `docs/SUPABASE_AND_VERCEL_SETUP.md`.
 - **Payments:** Stripe later; Phase 1 = dummy pay page only (already writes `purchases`).
-- **Next steps:** Remaining Phase 1 items are week-ahead jont loading and the week-on / site-goes-dark loop. Phases 2–8 are in **PHASES_OUTLINE.md**.
+- **Next steps:** Remaining work is tracked in **WORK_PLAN.md** (task split, what can run in parallel, status). The phase checklist stays in **PHASES_OUTLINE.md**. Still open in Phase 1: week-ahead jont loading and the week-on / site-goes-dark loop.
 
 ## Testing
 
