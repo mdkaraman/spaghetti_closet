@@ -42,6 +42,7 @@ function mockSupabase({
     auth: {
       getUser: () => Promise.resolve({ data: { user: currentUser }, error: null }),
     },
+    rpc: vi.fn(async () => ({ data: 0, error: null })),
     from: (table: string) => {
       if (table === 'profiles') {
         return {

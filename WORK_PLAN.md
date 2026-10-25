@@ -300,8 +300,8 @@ Done when:
 
 ### E1 — Spaghetti Bucks
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/spaghetti-bucks-e1-774d
 
 Needs: W0
 
@@ -311,11 +311,11 @@ Implement `voteDelta` and `canBless` with tests. Replace `cast_comment_vote`, `b
 
 Done when:
 
-- [ ] `voteDelta(0, 1)` is `1`, `voteDelta(1, -1)` is `-2`, `voteDelta(-1, -1)` is `0`.
-- [ ] `canBless` is false for an amount above the balance, for `0`, and for a negative amount.
-- [ ] The migration’s vote and gift functions follow those rules, and a gift cannot overdraw.
-- [ ] `/user` shows the balance.
-- [ ] `npm run build` passes.
+- [x] `voteDelta(0, 1)` is `1`, `voteDelta(1, -1)` is `-2`, `voteDelta(-1, -1)` is `0`.
+- [x] `canBless` is false for an amount above the balance, for `0`, and for a negative amount.
+- [x] The migration’s vote and gift functions follow those rules, and a gift cannot overdraw.
+- [x] `/user` shows the balance.
+- [x] `npm run build` passes.
 
 ### G1 — Preference form
 
