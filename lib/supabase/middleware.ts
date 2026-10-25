@@ -1,16 +1,21 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getSiteWindow, type SiteWindow } from '@/lib/week'
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export async function updateSession(request: NextRequest): Promise<{ response: NextResponse; user: { id: string } | null }> {
+export async function updateSession(request: NextRequest): Promise<{
+  response: NextResponse
+  user: { id: string } | null
+  siteWindow: SiteWindow
+}> {
   let response = NextResponse.next({
     request: { headers: request.headers },
   })
 
   if (!url || !key) {
-    return { response, user: null }
+    return { response, user: null, siteWindow: 'live' }
   }
 
   const supabase = createServerClient(url, key, {
@@ -27,6 +32,7 @@ export async function updateSession(request: NextRequest): Promise<{ response: N
   })
 
   const { data: { user } } = await supabase.auth.getUser()
+  const siteWindow = await getSiteWindow(supabase)
 
-  return { response, user }
+  return { response, user, siteWindow }
 }

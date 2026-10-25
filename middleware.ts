@@ -1,15 +1,20 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { darkAllows } from '@/lib/site-access'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const protectedPaths = ['/jont', '/user', '/pay']
+const protectedPaths = ['/jont', '/user', '/pay', '/chat', '/bid', '/sell']
 
 function isProtected(pathname: string) {
   return protectedPaths.some((p) => pathname === p || pathname.startsWith(p + '/'))
 }
 
 export async function middleware(request: NextRequest) {
-  const { response, user } = await updateSession(request)
+  const { response, user, siteWindow } = await updateSession(request)
   const pathname = request.nextUrl.pathname
+
+  if (siteWindow === 'dark' && !darkAllows(pathname)) {
+    return NextResponse.redirect(new URL('/waitlist', request.url))
+  }
 
   if (!isProtected(pathname)) {
     return response

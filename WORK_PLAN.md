@@ -187,8 +187,8 @@ W0
 
 ### W0 — Seams
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/w0-seams-5248
 
 Needs: nothing. One agent. Everyone else waits for this.
 
@@ -202,11 +202,11 @@ The jont page test still sees `i will have it!` → `/pay` with the default prop
 
 Done when:
 
-- [ ] `00003_parallel_seams.sql` matches the contract (tables, view, policies, purchase read, realtime, RPC stubs).
-- [ ] Jont page still links to `/pay` in buy mode, and the chat href is covered by a test.
-- [ ] User page still shows the handle, email, and copped list.
-- [ ] Dark allowlist is tested, and a live stub does not redirect.
-- [ ] `npm run build` passes.
+- [x] `00003_parallel_seams.sql` matches the contract (tables, view, policies, purchase read, realtime, RPC stubs).
+- [x] Jont page still links to `/pay` in buy mode, and the chat href is covered by a test.
+- [x] User page still shows the handle, email, and copped list.
+- [x] Dark allowlist is tested, and a live stub does not redirect.
+- [x] `npm run build` passes.
 
 ### A1 — Week window
 
