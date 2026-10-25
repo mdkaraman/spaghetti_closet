@@ -244,8 +244,8 @@ Done when:
 
 ### B1 — Chat
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/chat-room-63cc
 
 Needs: W0
 
@@ -255,11 +255,11 @@ The room loads for `/chat?jont=`. `CoppedList` reads `purchases` for that jont a
 
 Done when:
 
-- [ ] A logged-in user sees copped handles and comments for the jont in the query param.
-- [ ] A comment post shows up in the list (test the action and the presentational list).
-- [ ] `CommentVotes` is still rendered with `commentId` only.
-- [ ] The page does not call `getJontOfTheDay`.
-- [ ] `npm run build` passes.
+- [x] A logged-in user sees copped handles and comments for the jont in the query param.
+- [x] A comment post shows up in the list (test the action and the presentational list).
+- [x] `CommentVotes` is still rendered with `commentId` only.
+- [x] The page does not call `getJontOfTheDay`.
+- [x] `npm run build` passes.
 
 ### C1 — Bid page
 
