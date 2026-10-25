@@ -263,8 +263,8 @@ Done when:
 
 ### C1 — Bid page
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/bid-page-21fd
 
 Needs: W0
 
@@ -274,11 +274,11 @@ Owns: `app/bid/page.tsx`, `app/bid/BidForm.tsx`, `app/chat/BidderList.tsx`, `app
 
 Done when:
 
-- [ ] Submitting a bid stores dollars as cents, minimum $1, and redirects to that jont’s chat.
-- [ ] A second submit from the same user changes the amount and keeps the original `created_at`.
-- [ ] Bidder names render from `profile_handles`.
-- [ ] The bid page does not call `getJontOfTheDay`.
-- [ ] `npm run build` passes.
+- [x] Submitting a bid stores dollars as cents, minimum $1, and redirects to that jont’s chat.
+- [x] A second submit from the same user changes the amount and keeps the original `created_at`.
+- [x] Bidder names render from `profile_handles`.
+- [x] The bid page does not call `getJontOfTheDay`.
+- [x] `npm run build` passes.
 
 ### D1 — Comment votes
 
