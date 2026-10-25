@@ -227,8 +227,8 @@ Done when:
 
 ### A2 — Load one week
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/load-next-week-fe8b
 
 Needs: W0
 
@@ -238,9 +238,9 @@ Follow `supabase/seed/copy_hoodie_rest_of_year.sql`: America/New_York dates, cop
 
 Done when:
 
-- [ ] The SQL is safe to run twice (existing dates and an overlapping week row are skipped).
-- [ ] The README says how to run it and that it arms the gate.
-- [ ] `npm run build` passes.
+- [x] The SQL is safe to run twice (existing dates and an overlapping week row are skipped).
+- [x] The README says how to run it and that it arms the gate.
+- [x] `npm run build` passes.
 
 ### B1 — Chat
 
