@@ -282,8 +282,8 @@ Done when:
 
 ### D1 — Comment votes
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/comment-votes-a2cd
 
 Needs: W0
 
@@ -293,10 +293,10 @@ Up and down controls for one comment. They call `cast_comment_vote`. Show the cu
 
 Done when:
 
-- [ ] The component renders up and down for a `commentId` and shows both tallies.
-- [ ] The action calls `cast_comment_vote` with `1` or `-1`.
-- [ ] Props stay `{ commentId: string }`.
-- [ ] `npm run build` passes.
+- [x] The component renders up and down for a `commentId` and shows both tallies.
+- [x] The action calls `cast_comment_vote` with `1` or `-1`.
+- [x] Props stay `{ commentId: string }`.
+- [x] `npm run build` passes.
 
 ### E1 — Spaghetti Bucks
 
