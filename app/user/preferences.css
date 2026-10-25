@@ -1,0 +1,33 @@
+.preferences-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.preferences-form select {
+  border: 1px solid black;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: white;
+  width: 200px;
+}
+
+.preferences-form button {
+  background: none;
+  border: none;
+  color: #0000ee;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .preferences-form select {
+    width: 150px;
+  }
+}
