@@ -1,0 +1,65 @@
+.copped,
+.comments {
+  width: 100%;
+  max-width: 24rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.list {
+  list-style: none;
+}
+
+.comment {
+  margin-bottom: 0.75rem;
+}
+
+.handle {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.composer textarea {
+  width: 100%;
+  max-width: 20rem;
+  border: 1px solid black;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  background: white;
+}
+
+.composer textarea:focus {
+  outline: none;
+  border: 2px solid black;
+}
+
+.composer button {
+  background: none;
+  border: none;
+  color: #0000ee;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+}
+
+.composer button:disabled {
+  color: #555;
+  cursor: default;
+}
