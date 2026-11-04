@@ -25,6 +25,7 @@ test('user page links to sell', async () => {
           error: null,
         }),
     },
+    rpc: async () => ({ data: 0, error: null }),
     from: (table: string) => {
       if (table === 'profiles') {
         return {

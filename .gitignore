@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# verification skill browser evidence (proofs survive cleanup; not committed)
+.cursor/skills/verify-spaghetti-closet/evidence/
+
 # next.js
 /.next/
 /out/

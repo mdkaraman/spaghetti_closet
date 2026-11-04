@@ -1,0 +1,589 @@
+#!/usr/bin/env node
+'use strict'
+
+/**
+ * Spaghetti Closet verification harness.
+ * Subcommands: launch | doctor | browser | cleanup
+ * State lives under VERIFY_DIR (default /tmp/sc-verify-$RUN_ID).
+ * Evidence survives cleanup under the skill's evidence/ directory.
+ */
+
+const { spawn, execFileSync } = require('child_process')
+const fs = require('fs')
+const http = require('http')
+const path = require('path')
+const { pathToFileURL } = require('url')
+
+const SKILL_ROOT = path.resolve(__dirname, '..')
+const REPO_ROOT = path.resolve(SKILL_ROOT, '../../..')
+const EVIDENCE_ROOT = path.join(SKILL_ROOT, 'evidence')
+
+function usage(exitCode = 1) {
+  const msg = `Usage:
+  sc-verify launch [--port PORT]
+  sc-verify doctor
+  sc-verify browser <action> [options]
+  sc-verify cleanup
+
+Environment:
+  RUN_ID          required identity for this verification run (default: pid-timestamp)
+  VERIFY_DIR      instance state dir (default: /tmp/sc-verify-$RUN_ID)
+  VERIFY_PORT     listen port (default: 3101)
+  VERIFY_BASE_URL override base URL after launch
+`
+  process.stderr.write(msg)
+  process.exit(exitCode)
+}
+
+function runId() {
+  if (process.env.RUN_ID && process.env.RUN_ID.trim()) return process.env.RUN_ID.trim()
+  return `${process.pid}-${Date.now()}`
+}
+
+function verifyDir(id) {
+  const expected = path.join('/tmp', `sc-verify-${id}`)
+  const fromEnv = process.env.VERIFY_DIR
+  // Ignore a stale VERIFY_DIR left over from a previous run id.
+  if (fromEnv && path.resolve(fromEnv) === path.resolve(expected)) return fromEnv
+  return expected
+}
+
+function statePaths(dir) {
+  return {
+    dir,
+    pid: path.join(dir, 'next.pid'),
+    port: path.join(dir, 'port'),
+    log: path.join(dir, 'next.log'),
+    meta: path.join(dir, 'meta.json'),
+    ready: path.join(dir, 'ready'),
+  }
+}
+
+function readMeta(dir) {
+  const p = statePaths(dir).meta
+  if (!fs.existsSync(p)) return null
+  return JSON.parse(fs.readFileSync(p, 'utf8'))
+}
+
+function writeMeta(dir, meta) {
+  fs.mkdirSync(dir, { recursive: true })
+  fs.writeFileSync(statePaths(dir).meta, JSON.stringify(meta, null, 2) + '\n')
+}
+
+function baseUrlFromMeta(meta) {
+  return process.env.VERIFY_BASE_URL || meta.baseUrl
+}
+
+function waitForHttp(url, timeoutMs = 60000) {
+  const start = Date.now()
+  return new Promise((resolve, reject) => {
+    const attempt = () => {
+      const req = http.get(url, (res) => {
+        res.resume()
+        if (res.statusCode && res.statusCode < 500) {
+          resolve(res.statusCode)
+          return
+        }
+        retry()
+      })
+      req.on('error', retry)
+      req.setTimeout(2000, () => {
+        req.destroy()
+        retry()
+      })
+    }
+    const retry = () => {
+      if (Date.now() - start > timeoutMs) {
+        reject(new Error(`Timed out waiting for ${url}`))
+        return
+      }
+      setTimeout(attempt, 400)
+    }
+    attempt()
+  })
+}
+
+async function cmdLaunch(argv) {
+  const id = runId()
+  process.env.RUN_ID = id
+  const dir = verifyDir(id)
+  const paths = statePaths(dir)
+
+  if (fs.existsSync(paths.pid)) {
+    const existing = readMeta(dir)
+    if (existing && isPidAlive(existing.pid)) {
+      process.stderr.write(
+        `Instance already running in ${dir} (pid ${existing.pid}). Run cleanup first or pick a new RUN_ID.\n`
+      )
+      process.exit(2)
+    }
+  }
+
+  fs.mkdirSync(dir, { recursive: true })
+  fs.mkdirSync(EVIDENCE_ROOT, { recursive: true })
+
+  let port = Number(process.env.VERIFY_PORT || 3101)
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--port' && argv[i + 1]) {
+      port = Number(argv[++i])
+    }
+  }
+  if (!Number.isInteger(port) || port < 1) {
+    process.stderr.write('Invalid --port\n')
+    process.exit(2)
+  }
+
+  const logFd = fs.openSync(paths.log, 'w')
+  const child = spawn(
+    'npx',
+    ['next', 'dev', '-p', String(port), '-H', '127.0.0.1'],
+    {
+      cwd: REPO_ROOT,
+      env: {
+        ...process.env,
+        PORT: String(port),
+        // Leave Supabase unset unless the operator already exported it.
+        // Middleware tolerates missing keys (live window, no user).
+      },
+      detached: true,
+      stdio: ['ignore', logFd, logFd],
+    }
+  )
+  fs.closeSync(logFd)
+  child.unref()
+
+  const baseUrl = `http://127.0.0.1:${port}`
+  const meta = {
+    runId: id,
+    pid: child.pid,
+    port,
+    baseUrl,
+    repoRoot: REPO_ROOT,
+    startedAt: new Date().toISOString(),
+    evidenceRoot: EVIDENCE_ROOT,
+  }
+  fs.writeFileSync(paths.pid, String(child.pid) + '\n')
+  fs.writeFileSync(paths.port, String(port) + '\n')
+  writeMeta(dir, meta)
+
+  process.stdout.write(`Launching Next.js (pid ${child.pid}) at ${baseUrl}\n`)
+  process.stdout.write(`State: ${dir}\n`)
+  process.stdout.write(`Log: ${paths.log}\n`)
+
+  try {
+    await waitForHttp(baseUrl)
+    // Prefer a known public page becoming usable (not just TCP).
+    await waitForHttp(`${baseUrl}/wtf-is-this`)
+    fs.writeFileSync(paths.ready, 'ok\n')
+    meta.readyAt = new Date().toISOString()
+    writeMeta(dir, meta)
+    process.stdout.write(`Ready: ${baseUrl}\n`)
+    process.stdout.write(`RUN_ID=${id}\n`)
+    process.stdout.write(`VERIFY_DIR=${dir}\n`)
+    process.stdout.write(`export RUN_ID=${id} VERIFY_DIR=${dir} VERIFY_PORT=${port}\n`)
+  } catch (err) {
+    process.stderr.write(`Launch failed: ${err.message}\n`)
+    killPidTree(child.pid)
+    process.exit(1)
+  }
+}
+
+function isPidAlive(pid) {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function killPidTree(pid) {
+  if (!pid || !isPidAlive(pid)) return
+  try {
+    // Kill the process group started with detached:true
+    process.kill(-pid, 'SIGTERM')
+  } catch {
+    try {
+      process.kill(pid, 'SIGTERM')
+    } catch {
+      /* already gone */
+    }
+  }
+  const deadline = Date.now() + 8000
+  while (Date.now() < deadline && isPidAlive(pid)) {
+    execFileSync('sleep', ['0.2'])
+  }
+  if (isPidAlive(pid)) {
+    try {
+      process.kill(-pid, 'SIGKILL')
+    } catch {
+      try {
+        process.kill(pid, 'SIGKILL')
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+}
+
+function cmdDoctor() {
+  const id = process.env.RUN_ID || guessLatestRunId()
+  if (!id) {
+    process.stderr.write('No RUN_ID and no /tmp/sc-verify-* instance found.\n')
+    process.exit(2)
+  }
+  const dir = verifyDir(id)
+  const meta = readMeta(dir)
+  if (!meta) {
+    process.stderr.write(`No meta at ${dir}\n`)
+    process.exit(2)
+  }
+
+  const alive = isPidAlive(meta.pid)
+  const ready = fs.existsSync(statePaths(dir).ready)
+  let httpOk = false
+  let status = null
+  try {
+    const out = execFileSync(
+      'node',
+      [
+        '-e',
+        `require('http').get(${JSON.stringify(meta.baseUrl + '/')},r=>{console.log(r.statusCode);r.resume()}).on('error',e=>{console.error(e.message);process.exit(1)})`,
+      ],
+      { encoding: 'utf8' }
+    )
+    status = Number(String(out).trim())
+    httpOk = Number.isFinite(status) && status < 500
+  } catch (e) {
+    httpOk = false
+  }
+
+  // Confirm the listening process is ours when lsof is available.
+  let portOwnerOk = null
+  try {
+    const lsof = execFileSync('lsof', ['-iTCP:' + meta.port, '-sTCP:LISTEN', '-n', '-P'], {
+      encoding: 'utf8',
+    })
+    portOwnerOk = lsof.includes(String(meta.pid))
+  } catch {
+    portOwnerOk = null
+  }
+
+  const report = {
+    runId: meta.runId,
+    verifyDir: dir,
+    baseUrl: meta.baseUrl,
+    pid: meta.pid,
+    pidAlive: alive,
+    readyFile: ready,
+    httpStatus: status,
+    httpOk,
+    portOwnerOk,
+    evidenceRoot: meta.evidenceRoot,
+    packageName: readPackageName(),
+  }
+
+  process.stdout.write(JSON.stringify(report, null, 2) + '\n')
+
+  const ok = alive && ready && httpOk && (portOwnerOk === null || portOwnerOk === true)
+  if (!ok) {
+    process.stderr.write('doctor: instance is not worth driving\n')
+    process.exit(1)
+  }
+  process.stderr.write('doctor: ok\n')
+}
+
+function readPackageName() {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8')).name
+  } catch {
+    return null
+  }
+}
+
+function guessLatestRunId() {
+  const tmp = '/tmp'
+  let best = null
+  let bestMtime = 0
+  for (const name of fs.readdirSync(tmp)) {
+    if (!name.startsWith('sc-verify-')) continue
+    const dir = path.join(tmp, name)
+    const metaPath = path.join(dir, 'meta.json')
+    if (!fs.existsSync(metaPath)) continue
+    const st = fs.statSync(metaPath)
+    if (st.mtimeMs > bestMtime) {
+      bestMtime = st.mtimeMs
+      best = name.slice('sc-verify-'.length)
+    }
+  }
+  return best
+}
+
+async function loadPlaywright() {
+  try {
+    return require('playwright')
+  } catch {
+    // Optional dependency: resolve from npx cache / playwright package if installed later.
+    const { createRequire } = require('module')
+    const req = createRequire(path.join(REPO_ROOT, 'package.json'))
+    return req('playwright')
+  }
+}
+
+function lastUrlPath(dir) {
+  return path.join(dir, 'last-url')
+}
+
+function readLastUrl(dir, baseUrl) {
+  const p = lastUrlPath(dir)
+  if (!fs.existsSync(p)) return baseUrl + '/'
+  return fs.readFileSync(p, 'utf8').trim() || baseUrl + '/'
+}
+
+function writeLastUrl(dir, url) {
+  fs.writeFileSync(lastUrlPath(dir), url + '\n')
+}
+
+async function cmdBrowser(argv) {
+  if (!argv.length) usage()
+  const action = argv[0]
+  const args = parseBrowserArgs(argv.slice(1))
+
+  const id = process.env.RUN_ID || guessLatestRunId()
+  if (!id) {
+    process.stderr.write('No RUN_ID. Launch first.\n')
+    process.exit(2)
+  }
+  const dir = verifyDir(id)
+  const meta = readMeta(dir)
+  if (!meta) {
+    process.stderr.write(`No instance meta in ${dir}\n`)
+    process.exit(2)
+  }
+  const baseUrl = baseUrlFromMeta(meta)
+  const storage = path.join(dir, 'storage.json')
+
+  const { chromium } = await loadPlaywright()
+  const browser = await chromium.launch({
+    channel: process.env.VERIFY_CHROME_CHANNEL || undefined,
+    headless: true,
+    executablePath: process.env.VERIFY_CHROME_PATH || undefined,
+  })
+  const contextOpts = {
+    viewport: { width: 1280, height: 720 },
+    baseURL: baseUrl,
+  }
+  if (fs.existsSync(storage)) {
+    contextOpts.storageState = storage
+  }
+  const context = await browser.newContext(contextOpts)
+
+  try {
+    await runBrowserAction(context, action, args, { baseUrl, dir, meta })
+    await context.storageState({ path: storage })
+  } finally {
+    await context.close()
+    await browser.close()
+  }
+}
+
+function parseBrowserArgs(argv) {
+  const out = { _: [] }
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i]
+    if (a.startsWith('--')) {
+      const key = a.slice(2)
+      const val = argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true
+      out[key] = val
+    } else {
+      out._.push(a)
+    }
+  }
+  return out
+}
+
+async function runBrowserAction(context, action, args, env) {
+  const page = context.pages()[0] || (await context.newPage())
+  // Each CLI invocation is a fresh browser. Restore the last URL so click/fill
+  // continue the journey instead of acting on about:blank.
+  if (action !== 'goto') {
+    const resume = readLastUrl(env.dir, env.baseUrl)
+    if (page.url() === 'about:blank' || page.url() === '') {
+      await page.goto(resume, { waitUntil: 'networkidle' })
+    }
+  }
+
+  switch (action) {
+    case 'goto': {
+      const target = args.url || args._[0]
+      if (!target) throw new Error('browser goto requires --url PATH')
+      const res = await page.goto(target, { waitUntil: 'networkidle' })
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(
+        JSON.stringify({ ok: true, url: page.url(), status: res ? res.status() : null }) + '\n'
+      )
+      break
+    }
+    case 'click': {
+      const locator = buildLocator(page, args)
+      await locator.click()
+      await page.waitForLoadState('networkidle').catch(() => {})
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true, url: page.url() }) + '\n')
+      break
+    }
+    case 'fill': {
+      const locator = buildLocator(page, args)
+      if (args.value == null) throw new Error('browser fill requires --value')
+      await locator.fill(String(args.value))
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true }) + '\n')
+      break
+    }
+    case 'press': {
+      if (!args.key) throw new Error('browser press requires --key')
+      await page.keyboard.press(String(args.key))
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true }) + '\n')
+      break
+    }
+    case 'snapshot': {
+      const text = await page.locator('body').ariaSnapshot()
+      const outPath = resolveEvidencePath(args.path, env.meta)
+      fs.mkdirSync(path.dirname(outPath), { recursive: true })
+      fs.writeFileSync(outPath, text + '\n')
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true, path: outPath }) + '\n')
+      break
+    }
+    case 'screenshot': {
+      const outPath = resolveEvidencePath(args.path, env.meta)
+      fs.mkdirSync(path.dirname(outPath), { recursive: true })
+      await page.screenshot({ path: outPath, fullPage: true })
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true, path: outPath }) + '\n')
+      break
+    }
+    case 'content': {
+      const html = await page.content()
+      writeLastUrl(env.dir, page.url())
+      if (args.path) {
+        const outPath = resolveEvidencePath(args.path, env.meta)
+        fs.mkdirSync(path.dirname(outPath), { recursive: true })
+        fs.writeFileSync(outPath, html)
+        process.stdout.write(JSON.stringify({ ok: true, path: outPath }) + '\n')
+      } else {
+        process.stdout.write(html)
+      }
+      break
+    }
+    case 'eval': {
+      // Restricted: only read text / attributes via simple expressions on page.
+      if (!args.script) throw new Error('browser eval requires --script')
+      const result = await page.evaluate(args.script)
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true, result }, null, 2) + '\n')
+      break
+    }
+    case 'expect-url': {
+      const want = args.url || args._[0]
+      if (!want) throw new Error('browser expect-url requires --url')
+      const current = page.url()
+      let pathAndSearch = current
+      try {
+        const u = new URL(current)
+        pathAndSearch = u.pathname + u.search
+      } catch {
+        /* keep current */
+      }
+      const ok =
+        current === want ||
+        current.endsWith(want) ||
+        pathAndSearch === want ||
+        pathAndSearch.startsWith(want + '?') ||
+        pathAndSearch === new URL(want, env.baseUrl).pathname + new URL(want, env.baseUrl).search
+      if (!ok) {
+        process.stderr.write(`URL mismatch: got ${current}, want ${want}\n`)
+        process.exit(1)
+      }
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true, url: current }) + '\n')
+      break
+    }
+    case 'expect-text': {
+      const text = args.text || args._[0]
+      if (text == null) throw new Error('browser expect-text requires --text')
+      const body = await page.locator('body').innerText()
+      if (!body.includes(String(text))) {
+        process.stderr.write(`Text not found: ${text}\n`)
+        process.exit(1)
+      }
+      writeLastUrl(env.dir, page.url())
+      process.stdout.write(JSON.stringify({ ok: true }) + '\n')
+      break
+    }
+    default:
+      throw new Error(`Unknown browser action: ${action}`)
+  }
+}
+
+function buildLocator(page, args) {
+  if (args.role && args.name) {
+    return page.getByRole(args.role, { name: String(args.name), exact: args.exact === 'true' })
+  }
+  if (args.label) {
+    return page.getByLabel(String(args.label), { exact: args.exact === 'true' })
+  }
+  if (args.testId) {
+    return page.getByTestId(String(args.testId))
+  }
+  if (args.selector) {
+    return page.locator(String(args.selector))
+  }
+  throw new Error('Need --role/--name, --label, --testId, or --selector')
+}
+
+function resolveEvidencePath(p, meta) {
+  if (!p) throw new Error('Missing --path for evidence output')
+  if (path.isAbsolute(p)) return p
+  const root = (meta && meta.evidenceRoot) || EVIDENCE_ROOT
+  return path.join(root, p)
+}
+
+function cmdCleanup() {
+  const id = process.env.RUN_ID || guessLatestRunId()
+  if (!id) {
+    process.stdout.write('Nothing to clean up.\n')
+    return
+  }
+  const dir = verifyDir(id)
+  const meta = readMeta(dir)
+  if (meta && meta.pid) {
+    process.stdout.write(`Stopping pid ${meta.pid} from ${dir}\n`)
+    killPidTree(meta.pid)
+  }
+  // Remove instance state only — keep evidence/
+  if (fs.existsSync(dir)) {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+  process.stdout.write(`Removed instance state ${dir}\n`)
+  process.stdout.write(`Evidence retained at ${EVIDENCE_ROOT}\n`)
+}
+
+async function main() {
+  const argv = process.argv.slice(2)
+  if (!argv.length || argv[0] === '-h' || argv[0] === '--help') usage(0)
+  const cmd = argv[0]
+  try {
+    if (cmd === 'launch') await cmdLaunch(argv.slice(1))
+    else if (cmd === 'doctor') cmdDoctor()
+    else if (cmd === 'browser') await cmdBrowser(argv.slice(1))
+    else if (cmd === 'cleanup') cmdCleanup()
+    else usage()
+  } catch (err) {
+    process.stderr.write(String(err && err.stack ? err.stack : err) + '\n')
+    process.exit(1)
+  }
+}
+
+main()
