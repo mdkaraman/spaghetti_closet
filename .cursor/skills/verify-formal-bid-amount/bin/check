@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Formal bid amount check. Sync commit must match covered code confirmation.
-# SYNC_COMMIT=4db75597788d237e186445c44e164222ae64104d
+# SYNC_COMMIT=6ee91284907fcf0424bc6d526869c483858220bc
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
 cd "$ROOT"

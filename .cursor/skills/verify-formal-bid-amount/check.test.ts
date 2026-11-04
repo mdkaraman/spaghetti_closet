@@ -1,6 +1,6 @@
 /**
  * Formal check for lib/bids/amount.ts dollarsToCents.
- * Sync commit: 4db75597788d237e186445c44e164222ae64104d (advance only after re-confirming coverage)
+ * Sync commit: 6ee91284907fcf0424bc6d526869c483858220bc
  */
 import { expect, test } from 'vitest'
 import { BID_AMOUNT_BOUNDS, dollarsToCents } from '@/lib/bids/amount'
