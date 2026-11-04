@@ -23,7 +23,7 @@ Preconditions:
 - **Reach form.** Run `sc-verify browser goto --url /wtf-is-this`, `sc-verify browser click --role link --name "click here to blow"`, `sc-verify browser expect-url --url /signup`.
 - **Fill (no submit without env).** Run fills for `--label "user id:"`, `"email:"`, `"passcode:"`, `"confirm:"` with disposable values.
 - **Submit (Supabase).** Click `--role button --name "send it"`. Expect either `/signup/complete` or an inline `role=alert` error from the action—not a raw 500 from missing env.
-- **Proof.** `sc-verify browser screenshot --path signup/form.png` and `sc-verify browser snapshot --path signup/form.aria.json` showing all four labels.
+- **Proof.** `sc-verify browser screenshot --path signup/form.png` and `sc-verify browser snapshot --path signup/form.aria.txt` showing all four labels.
 
 ## Gotchas
 

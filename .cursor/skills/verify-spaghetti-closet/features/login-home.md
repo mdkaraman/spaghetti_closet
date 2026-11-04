@@ -23,7 +23,7 @@ Preconditions:
 - **Brand.** Run `sc-verify browser goto --url /` and `sc-verify browser expect-text --text "user id:"`. Confirm the title image via `sc-verify browser eval --script "document.querySelector('img.title-image')?.getAttribute('alt')" ` expecting `Spaghetti closet.`
 - **Fields.** Fill labels without submitting (submit needs Supabase). Run `sc-verify browser fill --label "user id:" --value "verify_user"` and `sc-verify browser fill --label "passcode:" --value "secret12"`.
 - **Footer.** Run `sc-verify browser click --role link --name "smh i forgot"` then `sc-verify browser expect-url --url /forgot-password`.
-- **Proof.** Return home, then `sc-verify browser screenshot --path login-home/home.png` and `sc-verify browser snapshot --path login-home/home.aria.json` showing the title alt and both field labels.
+- **Proof.** Return home, then `sc-verify browser screenshot --path login-home/home.png` and `sc-verify browser snapshot --path login-home/home.aria.txt` showing the title alt and both field labels.
 
 ## Gotchas
 

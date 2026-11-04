@@ -23,7 +23,7 @@ Preconditions:
 - **Open.** Run `sc-verify browser goto --url /waitlist` and `sc-verify browser expect-text --text "lmk when we back up"`.
 - **Form.** Run `sc-verify browser fill --label "email:" --value "verify+$RUN_ID@example.com"` (do not submit without Supabase).
 - **Submit (Supabase).** Click `--role button --name "send it"`. Expect URL `success=1` and status text `Got it`.
-- **Proof.** `sc-verify browser screenshot --path waitlist/form.png` and `sc-verify browser snapshot --path waitlist/form.aria.json`.
+- **Proof.** `sc-verify browser screenshot --path waitlist/form.png` and `sc-verify browser snapshot --path waitlist/form.aria.txt`.
 
 ## Gotchas
 
