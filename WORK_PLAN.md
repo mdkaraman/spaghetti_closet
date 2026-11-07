@@ -372,8 +372,8 @@ Done when:
 
 ### F1 — Blessing
 
-Status: todo
-Claimed by:
+Status: in progress
+Claimed by: cursor/f1-blessings
 
 Needs: E1
 
