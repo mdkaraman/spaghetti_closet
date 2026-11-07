@@ -12,6 +12,14 @@ vi.mock('../CommentList', () => ({
   default: ({ jontId }: { jontId: string }) => <p>comments {jontId}</p>,
 }))
 
+vi.mock('../BidderList', () => ({
+  default: ({ jontId }: { jontId: string }) => <p>bids {jontId}</p>,
+}))
+
+vi.mock('../WinnerSlot', () => ({
+  default: ({ jontId }: { jontId: string }) => <p>winner {jontId}</p>,
+}))
+
 test('passes the jont query param into the room', () => {
   render(<ChatPage searchParams={{ jont: 'jont-9' }} />)
   expect(screen.getByText('copped jont-9')).toBeInTheDocument()

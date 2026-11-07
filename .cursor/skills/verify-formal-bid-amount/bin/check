@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Formal bid amount check. Sync commit must match covered code confirmation.
+# SYNC_COMMIT=6ee91284907fcf0424bc6d526869c483858220bc
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
+cd "$ROOT"
+npx vitest run .cursor/skills/verify-formal-bid-amount/check.test.ts

@@ -1,20 +1,8 @@
 'use server'
 
+import { dollarsToCents } from '@/lib/bids/amount'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-
-const MIN_DOLLARS = 1
-const MAX_CENTS = 2_147_483_647
-
-function dollarsToCents(raw: string): number | null {
-  const trimmed = raw.trim()
-  if (!/^\d+(\.0+)?$/.test(trimmed)) return null
-  const dollars = Number(trimmed)
-  if (!Number.isInteger(dollars) || dollars < MIN_DOLLARS) return null
-  const cents = dollars * 100
-  if (!Number.isSafeInteger(cents) || cents > MAX_CENTS) return null
-  return cents
-}
 
 function field(formData: FormData, name: string): string {
   const value = formData.get(name)
