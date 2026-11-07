@@ -40,6 +40,8 @@ function asJont(value: JontRef | JontRef[] | null): JontRef | null {
   return Array.isArray(value) ? value[0] ?? null : value
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 function dollars(cents: number): string {
   return `$${cents / 100}`
 }
@@ -51,6 +53,10 @@ export default async function ListingPage({
   params: { id: string }
   searchParams?: { error?: string }
 }) {
+  if (!UUID.test(params.id)) {
+    notFound()
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
