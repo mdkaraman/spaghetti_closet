@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { getJontOfTheDay } from '@/lib/jont'
+import { resolveJontForUser } from '@/lib/jont/resolve'
 import { redirect } from 'next/navigation'
 
 export async function payNow() {
@@ -12,14 +12,10 @@ export async function payNow() {
     redirect('/')
   }
 
-  const jont = await getJontOfTheDay()
-  if (jont) {
-    await supabase.from('purchases').insert({
-      user_id: user.id,
-      jont_id: jont.id,
-    })
-    // Ignore duplicate (user already bought today's jont); still redirect
+  const jont = await resolveJontForUser()
+  if (!jont) {
+    redirect('/user')
   }
 
-  redirect('/user')
+  redirect(`/bid?jont=${jont.id}`)
 }
