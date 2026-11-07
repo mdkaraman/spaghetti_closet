@@ -1,7 +1,5 @@
 -- Load one week of the hoodie jont and arm a live site window.
--- Run in the Supabase SQL Editor (it bypasses RLS). Safe to re-run:
--- a date that already has a jont is left alone (jonts.date is unique),
--- and a site_weeks row that already overlaps this span is left alone.
+-- Run in the Supabase SQL Editor (it bypasses RLS).
 --
 -- Today is America/New_York. The span is seven days: starts_on is today
 -- and ends_on is exclusive (today + 7). New jont rows get a fresh id.
@@ -43,7 +41,11 @@ begin
     src.image_url,
     src.price_cents
   from generate_series(start_day, end_day - 1, interval '1 day') as day
-  on conflict (date) do nothing;
+  where not exists (
+    select 1
+    from public.jonts existing
+    where existing.date = day::date
+  );
 
   get diagnostics inserted_count = row_count;
 

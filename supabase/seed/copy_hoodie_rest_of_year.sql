@@ -1,6 +1,5 @@
 -- Copy the hoodie jont onto every remaining day of this year (US East Coast).
--- Run in the Supabase SQL Editor. Safe to re-run: a date that already has a
--- jont is left alone (jonts.date is unique). New rows get a fresh id.
+-- Run in the Supabase SQL Editor. New rows get a fresh id.
 --
 -- Source row: image_url = '/hoodie.png', otherwise the earliest title that
 -- contains "hoodie" (seed row is "this that hoodie tho" / "that size L jaunt"
@@ -51,7 +50,11 @@ begin
     src.image_url,
     src.price_cents
   from generate_series(start_day, end_day, interval '1 day') as day
-  on conflict (date) do nothing;
+  where not exists (
+    select 1
+    from public.jonts existing
+    where existing.date = day::date
+  );
 
   get diagnostics inserted_count = row_count;
 
