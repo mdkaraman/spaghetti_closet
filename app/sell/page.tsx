@@ -132,7 +132,9 @@ function ListingGroup({
             return (
               <li key={row.id} className="user-copped-item">
                 <div>
-                  <span className="user-copped-title">{jont.title}</span>
+                  <span className="user-copped-title">
+                    <Link href={`/sell/${row.id}`} className="jont-link">{jont.title}</Link>
+                  </span>
                   {jont.date ? <span className="user-copped-meta">{jont.date}</span> : null}
                 </div>
               </li>
