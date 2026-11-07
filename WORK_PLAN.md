@@ -426,8 +426,8 @@ Done when:
 
 ### H2 — Listing bids
 
-Status: todo
-Claimed by:
+Status: in progress
+Claimed by: cursor/h2-listing-bids
 
 Needs: H1, A1, C1, I1
 
