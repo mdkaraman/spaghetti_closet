@@ -408,8 +408,8 @@ Done when:
 
 ### G2 — One jont matched to preferences
 
-Status: todo
-Claimed by:
+Status: in progress
+Claimed by: cursor/g2-jont-preferences
 
 Needs: G1, A2, B1, C1, C2
 
