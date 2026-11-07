@@ -154,7 +154,10 @@ test('does not offer a purchase that already has a listing or belongs to someone
   expect(notListed.querySelector('input[name="purchase_id"]')).toHaveValue('p-fresh')
 
   const open = section(/^open$/i)
-  expect(within(open).getByText('listed hoodie')).toBeInTheDocument()
+  expect(within(open).getByRole('link', { name: 'listed hoodie' })).toHaveAttribute(
+    'href',
+    '/sell/l-1'
+  )
   expect(within(open).queryByRole('button')).not.toBeInTheDocument()
 })
 
@@ -184,7 +187,10 @@ test('shows a closed listing and does not offer that purchase again', async () =
 
   expect(within(section(/^not listed$/i)).getByText('nothing to sell')).toBeInTheDocument()
   expect(within(section(/^open$/i)).getByText('none open')).toBeInTheDocument()
-  expect(within(section(/^closed$/i)).getByText('sold pants')).toBeInTheDocument()
+  expect(within(section(/^closed$/i)).getByRole('link', { name: 'sold pants' })).toHaveAttribute(
+    'href',
+    '/sell/l-closed'
+  )
   expect(screen.queryByRole('button', { name: /list it/i })).not.toBeInTheDocument()
 })
 
