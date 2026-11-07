@@ -354,8 +354,8 @@ Done when:
 
 ### C2 — Bid-only jont page
 
-Status: todo
-Claimed by:
+Status: in progress
+Claimed by: cursor/c2-bid-entry
 
 Needs: B1, C1
 
