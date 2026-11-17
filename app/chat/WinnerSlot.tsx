@@ -14,24 +14,41 @@ type BalanceRow = {
   balance: number
 }
 
+type HandleRow = {
+  id: string
+  user_id: string
+}
+
 export default async function WinnerSlot({ jontId }: { jontId: string }) {
   if (!jontId) return null
 
   const supabase = await createClient()
-  const [{ data: bids, error }, { data: balances }, { data: jont }] =
-    await Promise.all([
-      supabase
-        .from('bids')
-        .select('user_id, amount_cents, created_at')
-        .eq('jont_id', jontId),
-      supabase.rpc('balances_for_bidders', {
-        jont_id: jontId,
-      }),
-      supabase.from('jonts').select('date').eq('id', jontId).maybeSingle(),
-    ])
+  const balancesPromise = Promise.resolve(
+    supabase.rpc('balances_for_bidders', {
+      jont_id: jontId,
+    }),
+  )
+  const jontPromise = Promise.resolve(
+    supabase.from('jonts').select('date').eq('id', jontId).maybeSingle(),
+  )
+  const { data: bids, error } = await supabase
+    .from('bids')
+    .select('user_id, amount_cents, created_at')
+    .eq('jont_id', jontId)
 
   const rows = (bids ?? []) as BidRow[]
   if (error || rows.length === 0) return null
+
+  const handlesPromise = supabase
+    .from('profile_handles')
+    .select('id, user_id')
+    .in('id', rows.map((row) => row.user_id))
+
+  const [{ data: balances }, { data: handles }, { data: jont }] = await Promise.all([
+    balancesPromise,
+    handlesPromise,
+    jontPromise,
+  ])
 
   const balanceByUser = new Map(
     ((balances ?? []) as BalanceRow[]).map((row) => [row.user_id, row.balance]),
@@ -46,13 +63,10 @@ export default async function WinnerSlot({ jontId }: { jontId: string }) {
   )
   if (!winner) return null
 
-  const { data: handleRow } = await supabase
-    .from('profile_handles')
-    .select('user_id')
-    .eq('id', winner.userId)
-    .maybeSingle()
-
-  const handle = (handleRow as { user_id: string } | null)?.user_id ?? '—'
+  const handleById = new Map(
+    ((handles ?? []) as HandleRow[]).map((row) => [row.id, row.user_id]),
+  )
+  const handle = handleById.get(winner.userId) ?? '—'
   const jontDate = (jont as { date: string } | null)?.date
   const label = jontDate && todayEastCoast() > jontDate ? 'winner' : 'high bid'
 
