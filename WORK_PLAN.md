@@ -408,8 +408,8 @@ Done when:
 
 ### G2 — One jont matched to preferences
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/g2-jont-preferences
 
 Needs: G1, A2, B1, C1, C2
 
@@ -419,10 +419,10 @@ Owns: `lib/jont/resolve.ts`, a new migration that adds `jonts.size` and `jonts.j
 
 Done when:
 
-- [ ] A user with preferences resolves to a matching jont for today when one exists.
-- [ ] A jont with null size and type still matches, and no row for today still shows the empty copy.
-- [ ] The two seed files are safe to run after the unique constraint is gone.
-- [ ] `npm run build` passes.
+- [x] A user with preferences resolves to a matching jont for today when one exists.
+- [x] A jont with null size and type still matches, and no row for today still shows the empty copy.
+- [x] The two seed files are safe to run after the unique constraint is gone.
+- [x] `npm run build` passes.
 
 ### H2 — Listing bids
 
