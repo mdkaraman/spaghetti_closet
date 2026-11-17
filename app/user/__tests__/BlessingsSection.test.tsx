@@ -1,12 +1,26 @@
-import { expect, test, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { beforeEach, expect, test, vi } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
 import BlessingsSection from '../BlessingsSection'
+
+vi.mock('next/navigation', () => ({
+  useSearchParams: vi.fn(() => ({ get: () => null })),
+  redirect: (url: string) => {
+    throw new Error(`NEXT_REDIRECT:${url}`)
+  },
+}))
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
 }))
 
+const { useSearchParams } = await import('next/navigation')
 const { createClient } = await import('@/lib/supabase/server')
+
+beforeEach(() => {
+  vi.mocked(useSearchParams).mockReturnValue({
+    get: () => null,
+  } as ReturnType<typeof useSearchParams>)
+})
 
 function mockUser({
   user = { id: 'user-1' } as { id: string } | null,
@@ -50,6 +64,31 @@ test('shows the blessings heading, handle field, and amount field', async () => 
   expect(amount).toHaveAttribute('min', '1')
   expect(amount).toHaveAttribute('step', '1')
   expect(screen.getByRole('button', { name: 'bless' })).toHaveAttribute('type', 'submit')
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+})
+
+test('shows a blessing error from the query on the blessing form', async () => {
+  vi.mocked(useSearchParams).mockReturnValue({
+    get: (key: string) => (key === 'bless_error' ? 'who you blessing' : null),
+  } as ReturnType<typeof useSearchParams>)
+  mockUser()
+  render(await BlessingsSection())
+
+  const form = screen.getByRole('button', { name: 'bless' }).closest('form')
+  expect(form).not.toBeNull()
+  expect(within(form as HTMLFormElement).getByRole('alert')).toHaveTextContent(
+    'who you blessing'
+  )
+})
+
+test('does not show a preferences error on the blessing form', async () => {
+  vi.mocked(useSearchParams).mockReturnValue({
+    get: (key: string) => (key === 'error' ? 'pick one from the list' : null),
+  } as ReturnType<typeof useSearchParams>)
+  mockUser()
+  render(await BlessingsSection())
+
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument()
 })
 
 test('lists incoming blessings newest first with the giver handle and amount', async () => {

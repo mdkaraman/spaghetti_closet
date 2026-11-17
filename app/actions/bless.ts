@@ -29,7 +29,7 @@ function parseGift(handleRaw: string, amountRaw: string): ParsedGift {
 }
 
 function blessError(message: string): never {
-  redirect('/user?error=' + encodeURIComponent(message))
+  redirect('/user?bless_error=' + encodeURIComponent(message))
 }
 
 export async function bless(formData: FormData) {

@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import { bless } from '@/app/actions/bless'
 import { createClient } from '@/lib/supabase/server'
+import BlessError from './BlessError'
 import './preferences.css'
 
 type BlessingRow = {
@@ -51,6 +53,9 @@ export default async function BlessingsSection() {
     <>
       <h2 className="user-heading">blessings</h2>
       <form className="preferences-form" action={bless}>
+        <Suspense fallback={null}>
+          <BlessError />
+        </Suspense>
         <div className="form-row">
           <label htmlFor="handle">handle:</label>
           <input id="handle" name="handle" type="text" required />

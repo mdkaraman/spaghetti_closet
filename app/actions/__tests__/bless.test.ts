@@ -41,13 +41,13 @@ test('an empty handle does not call bless_spaghetti', async () => {
   const { from, rpc } = mockClient()
 
   await expect(bless(formData({ handle: '', amount: '1' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('who you blessing')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('who you blessing')
   )
   await expect(bless(formData({ amount: '1' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('who you blessing')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('who you blessing')
   )
   await expect(bless(formData({ handle: '   ', amount: '1' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('who you blessing')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('who you blessing')
   )
 
   expect(from).not.toHaveBeenCalled()
@@ -58,10 +58,10 @@ test('a gift to yourself does not call bless_spaghetti', async () => {
   const { eq, rpc } = mockClient({ handle: 'me' })
 
   await expect(bless(formData({ handle: 'me', amount: '1' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('cannot bless yourself')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('cannot bless yourself')
   )
   await expect(bless(formData({ handle: '  me  ', amount: '1' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('cannot bless yourself')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('cannot bless yourself')
   )
 
   expect(eq).toHaveBeenCalledWith('id', 'user-1')
@@ -72,16 +72,16 @@ test('an amount under 1 does not call bless_spaghetti', async () => {
   const { from, rpc } = mockClient()
 
   await expect(bless(formData({ handle: 'ada', amount: '0' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('whole number, 1 minimum')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('whole number, 1 minimum')
   )
   await expect(bless(formData({ handle: 'ada', amount: '-1' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('whole number, 1 minimum')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('whole number, 1 minimum')
   )
   await expect(bless(formData({ handle: 'ada', amount: '1.5' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('whole number, 1 minimum')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('whole number, 1 minimum')
   )
   await expect(bless(formData({ handle: 'ada', amount: '' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('whole number, 1 minimum')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('whole number, 1 minimum')
   )
 
   expect(from).not.toHaveBeenCalled()
@@ -116,6 +116,6 @@ test('a failed bless_spaghetti redirects with the error', async () => {
   mockClient({ error: { message: 'amount greater than balance' } })
 
   await expect(bless(formData({ handle: 'ada', amount: '4' }))).rejects.toThrow(
-    'NEXT_REDIRECT:/user?error=' + encodeURIComponent('amount greater than balance')
+    'NEXT_REDIRECT:/user?bless_error=' + encodeURIComponent('amount greater than balance')
   )
 })
