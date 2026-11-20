@@ -33,11 +33,11 @@ test('jont page has description text', () => {
   expect(screen.getByText(/that size L jaunt/i)).toBeInTheDocument()
 })
 
-test('jont page has i will have it link to pay', () => {
+test('jont page has i will have it link to bid', () => {
   render(<JontPageContent jont={mockJont} />)
   const link = screen.getByRole('link', { name: /i will have it!/i })
   expect(link).toBeInTheDocument()
-  expect(link).toHaveAttribute('href', '/pay')
+  expect(link).toHaveAttribute('href', '/bid?jont=abc-123')
 })
 
 test('a purchase renders pull up to that jont chat', () => {

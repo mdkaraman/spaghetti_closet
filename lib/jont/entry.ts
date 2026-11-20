@@ -2,7 +2,7 @@ export type JontEntryMode = 'buy' | 'bid'
 
 export type JontEntryResult = 'pay' | 'bid' | 'chat'
 
-export const JONT_ENTRY_MODE: JontEntryMode = 'buy'
+export const JONT_ENTRY_MODE: JontEntryMode = 'bid'
 
 export function jontEntry({
   mode,

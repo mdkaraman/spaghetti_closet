@@ -354,8 +354,8 @@ Done when:
 
 ### C2 — Bid-only jont page
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/c2-bid-entry
 
 Needs: B1, C1
 
@@ -365,9 +365,9 @@ Set `JONT_ENTRY_MODE` to `'bid'`. Update the jont page test so the unsold jont l
 
 Done when:
 
-- [ ] The unsold jont CTA is the bid page.
-- [ ] A purchase still links `pull up` to that jont’s chat.
-- [ ] `payNow` does not write a `purchases` row.
+- [x] The unsold jont CTA is the bid page.
+- [x] A purchase still links `pull up` to that jont’s chat.
+- [x] `payNow` does not write a `purchases` row.
 - [ ] `npm run build` passes.
 
 ### F1 — Blessing

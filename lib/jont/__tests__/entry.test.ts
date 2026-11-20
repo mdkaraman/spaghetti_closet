@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest'
 import { JONT_ENTRY_MODE, jontEntry } from '../entry'
 
-test('buy mode starts as the entry mode', () => {
-  expect(JONT_ENTRY_MODE).toBe('buy')
+test('bid mode starts as the entry mode', () => {
+  expect(JONT_ENTRY_MODE).toBe('bid')
 })
 
 test('buy mode with no purchase is pay', () => {
