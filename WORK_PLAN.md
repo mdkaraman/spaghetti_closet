@@ -372,8 +372,8 @@ Done when:
 
 ### F1 — Blessing
 
-Status: todo
-Claimed by:
+Status: done
+Claimed by: cursor/f1-blessings
 
 Needs: E1
 
@@ -383,10 +383,10 @@ A form takes a handle and a whole-number amount and calls `bless_spaghetti`. Und
 
 Done when:
 
-- [ ] The form submits a handle and an amount to `bless_spaghetti`.
-- [ ] The section lists who blessed the caller, newest first.
-- [ ] A gift to yourself is rejected in the form before the RPC (empty handle and amount under `1` too).
-- [ ] `npm run build` passes.
+- [x] The form submits a handle and an amount to `bless_spaghetti`.
+- [x] The section lists who blessed the caller, newest first.
+- [x] A gift to yourself is rejected in the form before the RPC (empty handle and amount under `1` too).
+- [x] `npm run build` passes.
 
 ### I1 — High bid and winner
 
