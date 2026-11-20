@@ -390,8 +390,8 @@ Done when:
 
 ### I1 — High bid and winner
 
-Status: todo
-Claimed by:
+Status: in progress
+Claimed by: cursor/i1-winner-slot
 
 Needs: C1, E1
 
